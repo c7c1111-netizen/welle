@@ -1,0 +1,633 @@
+هذا هو الكود الكامل للموقع (ملف HTML واحد، انسخه واحفظه بامتداد `.html`):
+
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مختبر الكيمياء | موقع تعليمي للمرحلة الثانوية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#0E1F1C;
+  --bg-dark-2:#122824;
+  --paper:#F3F5EE;
+  --paper-2:#E9EDE2;
+  --ink:#132420;
+  --ink-soft:#3C4B45;
+  --teal:#0B7A75;
+  --teal-deep:#075C58;
+  --blue:#2E6F95;
+  --amber:#E2A63B;
+  --crimson:#B23A2E;
+  --violet:#7A5AA8;
+  --line:rgba(19,36,32,0.12);
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Tajawal',sans-serif;
+  line-height:1.75;
+}
+h1,h2,h3,.display{font-family:'Cairo',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;display:inline-block;}
+a{color:inherit;}
+
+/* ===== Top Nav ===== */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(14,31,28,0.96);
+  backdrop-filter:blur(6px);
+  color:#F3F5EE;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.topbar-inner{
+  max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Cairo',sans-serif;font-weight:800;font-size:1.15rem;}
+.brand-mark{
+  width:34px;height:34px;border-radius:9px;
+  background:conic-gradient(from 210deg,var(--teal),var(--blue) 40%,var(--amber) 75%,var(--crimson));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.85rem;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);
+}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.tab-btn{
+  appearance:none;border:1px solid rgba(255,255,255,0.16);
+  background:transparent;color:rgba(255,255,255,0.75);
+  font-family:'Tajawal',sans-serif;font-weight:700;font-size:.92rem;
+  padding:8px 16px;border-radius:999px;cursor:pointer;transition:.2s;
+  position:relative;
+}
+.tab-btn:hover{color:#fff;border-color:rgba(255,255,255,0.4);}
+.tab-btn.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+
+/* ===== Hero ===== */
+.hero{
+  background:
+    radial-gradient(circle at 18% 20%, rgba(46,111,149,0.35), transparent 55%),
+    radial-gradient(circle at 85% 75%, rgba(226,166,59,0.25), transparent 45%),
+    linear-gradient(180deg,var(--bg-dark),var(--bg-dark-2));
+  color:#F3F5EE;
+  padding:64px 20px 90px;
+  position:relative;overflow:hidden;
+}
+.hero-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;font-size:.78rem;
+  color:var(--amber);text-transform:uppercase;direction:ltr;text-align:left;
+  display:inline-block;border:1px solid rgba(226,166,59,.4);padding:4px 10px;border-radius:6px;margin-bottom:18px;
+}
+.hero h1{font-size:2.6rem;font-weight:800;line-height:1.3;margin:0 0 18px;}
+.hero p{color:rgba(243,245,238,0.78);font-size:1.05rem;max-width:46ch;margin:0 0 28px;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{
+  border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.95rem;
+  padding:13px 26px;border-radius:10px;transition:.2s;
+}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal-deep);}
+.btn-ghost{background:transparent;color:#F3F5EE;border:1px solid rgba(255,255,255,0.3);}
+.btn-ghost:hover{border-color:#fff;}
+
+/* Signature: bubbling beaker */
+.beaker-wrap{display:flex;justify-content:center;align-items:flex-end;}
+.beaker{width:190px;position:relative;}
+.beaker svg{width:100%;display:block;}
+.bubble{
+  position:absolute;bottom:22px;border-radius:50%;
+  background:rgba(255,255,255,0.55);
+  animation:rise 3.6s infinite ease-in;
+}
+@keyframes rise{
+  0%{transform:translateY(0) scale(0.6);opacity:0;}
+  15%{opacity:.9;}
+  100%{transform:translateY(-140px) scale(1.1);opacity:0;}
+}
+
+/* ===== Sections ===== */
+.section{max-width:1180px;margin:0 auto;padding:70px 20px;}
+.section-head{margin-bottom:36px;}
+.section-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--teal-deep);
+  letter-spacing:.06em;direction:ltr;display:block;text-align:left;margin-bottom:8px;
+}
+.section h2{font-size:1.9rem;margin:0 0 10px;}
+.section-sub{color:var(--ink-soft);max-width:65ch;}
+
+.view{display:none;}
+.view.active{display:block;animation:fade .4s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ===== Lessons ===== */
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
+.lesson-card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;
+}
+.lesson-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,36,32,0.08);}
+.lesson-card .num{font-family:'IBM Plex Mono',monospace;color:var(--teal);font-size:.8rem;}
+.lesson-card h3{font-size:1.15rem;margin:8px 0 8px;}
+.lesson-card p{color:var(--ink-soft);font-size:.92rem;margin:0;}
+.lesson-body{
+  display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);
+  color:var(--ink-soft);font-size:.93rem;
+}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-card.open{border-color:var(--teal);}
+.lesson-body ul{margin:8px 0 0;padding-inline-start:20px;}
+
+/* ===== Periodic table ===== */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.legend span{
+  display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--ink-soft);
+}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;}
+.pt-scroll{overflow-x:auto;padding-bottom:10px;}
+.pt-grid{
+  display:grid;
+  grid-template-columns:repeat(18,minmax(46px,1fr));
+  gap:4px;min-width:920px;
+}
+.el{
+  aspect-ratio:1/1;border-radius:6px;color:#fff;padding:4px;position:relative;
+  cursor:pointer;display:flex;flex-direction:column;justify-content:center;
+  font-size:.6rem;line-height:1.1;transition:.15s;border:1px solid rgba(255,255,255,.15);
+}
+.el:hover{transform:scale(1.14);z-index:5;box-shadow:0 6px 16px rgba(0,0,0,.28);}
+.el .n{font-family:'IBM Plex Mono',monospace;font-size:.58rem;opacity:.85;}
+.el .s{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1rem;}
+.el .m{font-size:.5rem;opacity:.8;}
+.cat-alkali{background:var(--crimson);}
+.cat-alkaline{background:#C46A3C;}
+.cat-transition{background:var(--blue);}
+.cat-post{background:#4C8A8A;}
+.cat-metalloid{background:var(--violet);}
+.cat-nonmetal{background:var(--teal);}
+.cat-halogen{background:#2F9E6E;}
+.cat-noble{background:#3B4D8A;}
+.cat-lanth{background:#A6753F;}
+.cat-actin{background:#8A5A3F;}
+.el.spacer{visibility:hidden;}
+
+.detail-panel{
+  margin-top:22px;background:var(--bg-dark);color:#F3F5EE;border-radius:var(--radius);
+  padding:24px;display:none;gap:20px;align-items:center;flex-wrap:wrap;
+}
+.detail-panel.show{display:flex;}
+.detail-symbol{
+  width:90px;height:90px;border-radius:14px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex-shrink:0;color:#fff;
+}
+.detail-symbol .s{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;}
+.detail-symbol .n{font-family:'IBM Plex Mono',monospace;font-size:.75rem;opacity:.8;}
+.detail-info h3{margin:0 0 6px;font-size:1.3rem;}
+.detail-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:rgba(243,245,238,.75);}
+.detail-meta b{color:#fff;font-family:'IBM Plex Mono',monospace;}
+
+/* ===== Quiz ===== */
+.quiz-box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;max-width:680px;}
+.quiz-progress{font-family:'IBM Plex Mono',monospace;color:var(--teal-deep);font-size:.85rem;margin-bottom:6px;direction:ltr;text-align:left;}
+.quiz-bar{height:5px;border-radius:99px;background:var(--paper-2);overflow:hidden;margin-bottom:22px;}
+.quiz-bar-fill{height:100%;background:var(--teal);width:0%;transition:.3s;}
+.quiz-q{font-size:1.15rem;font-weight:700;margin-bottom:20px;}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;}
+.opt-btn{
+  text-align:right;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:13px 16px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.95rem;transition:.15s;
+}
+.opt-btn:hover{border-color:var(--teal);}
+.opt-btn.correct{background:#DCF3E3;border-color:#2F9E6E;}
+.opt-btn.wrong{background:#F8DCD7;border-color:var(--crimson);}
+.opt-btn:disabled{cursor:default;}
+.quiz-feedback{margin-top:16px;font-size:.9rem;color:var(--ink-soft);min-height:1.4em;}
+.quiz-next{margin-top:18px;}
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result .score{font-family:'Cairo',sans-serif;font-size:2.6rem;font-weight:800;color:var(--teal-deep);}
+
+/* ===== Lab ===== */
+.lab-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:36px;align-items:start;}
+.lab-controls{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+.lab-controls h3{margin-top:0;font-size:1rem;}
+.lab-field{margin-bottom:18px;}
+.lab-field label{display:block;font-size:.85rem;font-weight:700;margin-bottom:8px;}
+select, input[type=range]{width:100%;font-family:'Tajawal',sans-serif;}
+select{padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--paper);}
+.ph-value{font-family:'IBM Plex Mono',monospace;font-weight:600;direction:ltr;text-align:center;display:block;margin-top:6px;}
+.lab-stage{
+  background:var(--bg-dark);border-radius:var(--radius);padding:30px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;color:#F3F5EE;position:relative;
+}
+.flask{width:150px;position:relative;}
+.flask svg{width:100%;display:block;}
+.lab-caption{margin-top:18px;text-align:center;font-size:.9rem;color:rgba(243,245,238,.85);max-width:38ch;}
+.tag-pill{
+  position:absolute;top:14px;left:14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,.2);
+  padding:4px 12px;border-radius:99px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;direction:ltr;
+}
+
+footer{text-align:center;padding:34px 20px;color:var(--ink-soft);font-size:.85rem;border-top:1px solid var(--line);}
+
+@media(max-width:860px){
+  .hero-inner{grid-template-columns:1fr;}
+  .lab-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark">Ch</span> مختبر الكيمياء</div>
+    <div class="tabs">
+      <button class="tab-btn active" data-view="lessons">الدروس</button>
+      <button class="tab-btn" data-view="table">الجدول الدوري</button>
+      <button class="tab-btn" data-view="quiz">اختبر نفسك</button>
+      <button class="tab-btn" data-view="lab">المختبر الافتراضي</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow">Grade 10–12 · Chemistry</span>
+      <h1>الكيمياء أوضح لما تشوفها تتفاعل قدامك</h1>
+      <p>موقع تعليمي لطلاب المرحلة الثانوية يجمع شرح الدروس، جدول دوري تفاعلي، اختبارات فورية، ومختبر افتراضي آمن للتجريب بلا مخاطر.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="showView('lessons')">ابدأ بالدروس</button>
+        <button class="btn btn-ghost" onclick="showView('lab')">جرّب المختبر</button>
+      </div>
+    </div>
+    <div class="beaker-wrap">
+      <div class="beaker">
+        <svg viewBox="0 0 200 260" fill="none">
+          <path d="M70 20H130V90L172 220C176 234 166 246 152 246H48C34 246 24 234 28 220L70 90V20Z" fill="rgba(11,122,117,0.18)" stroke="#F3F5EE" stroke-width="3"/>
+          <path d="M35 200C55 190 145 190 165 200L152 240C150 244 148 246 144 246H56C52 246 50 244 48 240L35 200Z" fill="#0B7A75"/>
+          <line x1="58" y1="20" x2="142" y2="20" stroke="#F3F5EE" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="bubble" style="width:10px;height:10px;left:70px;animation-delay:0s;"></div>
+        <div class="bubble" style="width:7px;height:7px;left:95px;animation-delay:1.1s;"></div>
+        <div class="bubble" style="width:12px;height:12px;left:115px;animation-delay:2s;"></div>
+        <div class="bubble" style="width:6px;height:6px;left:85px;animation-delay:2.7s;"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= LESSONS ================= -->
+<section class="section view active" id="view-lessons">
+  <div class="section-head">
+    <span class="section-tag">01 · Lessons</span>
+    <h2>شرح الدروس والمفاهيم الأساسية</h2>
+    <p class="section-sub">اضغط على أي بطاقة لعرض الشرح الكامل للدرس.</p>
+  </div>
+  <div class="lesson-grid" id="lessonGrid"></div>
+</section>
+
+<!-- ================= PERIODIC TABLE ================= -->
+<section class="section view" id="view-table">
+  <div class="section-head">
+    <span class="section-tag">02 · Periodic Table</span>
+    <h2>الجدول الدوري التفاعلي</h2>
+    <p class="section-sub">مرّر الفأرة أو اضغط على أي عنصر لعرض تفاصيله: الرمز، العدد الذري، الكتلة الذرية، والتصنيف.</p>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--crimson)"></i> فلزات قلوية</span>
+    <span><i style="background:#C46A3C"></i> فلزات قلوية ترابية</span>
+    <span><i style="background:var(--blue)"></i> فلزات انتقالية</span>
+    <span><i style="background:#4C8A8A"></i> فلزات أخرى</span>
+    <span><i style="background:var(--violet)"></i> أشباه فلزات</span>
+    <span><i style="background:var(--teal)"></i> لافلزات</span>
+    <span><i style="background:#2F9E6E"></i> هالوجينات</span>
+    <span><i style="background:#3B4D8A"></i> غازات نبيلة</span>
+    <span><i style="background:#A6753F"></i> لانثانيدات</span>
+    <span><i style="background:#8A5A3F"></i> أكتينيدات</span>
+  </div>
+  <div class="pt-scroll"><div class="pt-grid" id="ptGrid"></div></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-symbol" id="detailSymbol"></div>
+    <div class="detail-info">
+      <h3 id="detailName"></h3>
+      <div class="detail-meta">
+        <span>العدد الذري: <b id="detailNum"></b></span>
+        <span>الكتلة الذرية: <b id="detailMass"></b></span>
+        <span>الفئة: <b id="detailCat"></b></span>
+        <span>الدورة/المجموعة: <b id="detailPos"></b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="section view" id="view-quiz">
+  <div class="section-head">
+    <span class="section-tag">03 · Quiz</span>
+    <h2>اختبارات وأسئلة تفاعلية</h2>
+    <p class="section-sub">10 أسئلة تغطي أهم مفاهيم الكيمياء للمرحلة الثانوية، مع تصحيح فوري.</p>
+  </div>
+  <div class="quiz-box" id="quizBox"></div>
+</section>
+
+<!-- ================= LAB ================= -->
+<section class="section view" id="view-lab">
+  <div class="section-head">
+    <span class="section-tag">04 · Virtual Lab</span>
+    <h2>المختبر الافتراضي</h2>
+    <p class="section-sub">جرّب تفاعلات كيميائية شائعة بأمان تام من خلال المحاكاة.</p>
+  </div>
+  <div class="lab-grid">
+    <div class="lab-controls">
+      <h3>تجربة 1 — كاشف الحموضة (pH)</h3>
+      <div class="lab-field">
+        <label>حرّك المؤشر لتغيير الرقم الهيدروجيني</label>
+        <input type="range" id="phRange" min="0" max="14" value="7" step="1">
+        <span class="ph-value" id="phValue">pH = 7</span>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--line);margin:22px 0;">
+      <h3>تجربة 2 — اختبار اللهب للفلزات</h3>
+      <div class="lab-field">
+        <label>اختر أيون الفلز</label>
+        <select id="flameSelect">
+          <option value="none">— اختر عنصرًا —</option>
+          <option value="li">ليثيوم Li⁺</option>
+          <option value="na">صوديوم Na⁺</option>
+          <option value="k">بوتاسيوم K⁺</option>
+          <option value="ca">كالسيوم Ca²⁺</option>
+          <option value="cu">نحاس Cu²⁺</option>
+          <option value="sr">سترونتيوم Sr²⁺</option>
+        </select>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--line);margin:22px 0;">
+      <h3>تجربة 3 — فلز مع حمض</h3>
+      <div class="lab-field">
+        <label>اضغط لبدء تفاعل الزنك مع حمض الهيدروكلوريك</label>
+        <button class="btn btn-primary" style="width:100%" id="acidReactBtn">ابدأ التفاعل</button>
+      </div>
+    </div>
+    <div class="lab-stage">
+      <span class="tag-pill" id="labTag">STAGE / READY</span>
+      <div class="flask" id="flaskWrap">
+        <svg viewBox="0 0 200 260" id="flaskSvg">
+          <path d="M78 15H122V95L168 225C173 240 162 252 147 252H53C38 252 27 240 32 225L78 95V15Z" fill="rgba(255,255,255,0.06)" stroke="#F3F5EE" stroke-width="3"/>
+          <path id="liquidPath" d="M40 200C60 192 140 192 160 200L148 240C146 245 144 247 140 247H60C56 247 54 245 52 240L40 200Z" fill="#2E6F95"/>
+          <line x1="65" y1="15" x2="135" y2="15" stroke="#F3F5EE" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div id="labBubbles"></div>
+      </div>
+      <p class="lab-caption" id="labCaption">اختر تجربة من القائمة لبدء المحاكاة، وراقب التغير في اللون أو الفقاعات.</p>
+    </div>
+  </div>
+</section>
+
+<footer>موقع تعليمي لمادة الكيمياء — للمرحلة الثانوية · صُنع للمساعدة على الفهم والمراجعة</footer>
+
+<script>
+/* ---------- Navigation ---------- */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+
+/* ---------- Lessons ---------- */
+const lessons = [
+  {t:"البنية الذرية", d:"الذرة تتكون من نواة تحوي البروتونات (شحنة موجبة) والنيوترونات (متعادلة)، وتدور حولها الإلكترونات (شحنة سالبة) في مستويات طاقة. العدد الذري يمثل عدد البروتونات، والكتلة الذرية تقريبًا مجموع البروتونات والنيوترونات.",
+   pts:["العدد الذري (Z) = عدد البروتونات = عدد الإلكترونات في الذرة المتعادلة","العدد الكتلي (A) = عدد البروتونات + عدد النيوترونات","النظائر: ذرات نفس العنصر باختلاف عدد النيوترونات"]},
+  {t:"الجدول الدوري وخواصه", d:"يرتب الجدول الدوري العناصر حسب العدد الذري التصاعدي، وتتكرر خواصها الكيميائية بشكل دوري. الأعمدة تسمى مجموعات (تتشابه في عدد إلكترونات التكافؤ)، والصفوف تسمى دورات.",
+   pts:["نصف القطر الذري يزداد كلما اتجهنا لأسفل المجموعة ويقل من اليسار لليمين في الدورة","الفلزات على يسار الجدول، اللافلزات على اليمين، وأشباه الفلزات بينهما","الطاقة التأينية تزداد من اليسار لليمين في الدورة الواحدة"]},
+  {t:"الروابط الكيميائية", d:"تنشأ الروابط الكيميائية نتيجة رغبة الذرات في الوصول لاستقرار التوزيع الإلكتروني (غالبًا 8 إلكترونات في المستوى الأخير).",
+   pts:["الرابطة الأيونية: انتقال إلكترونات بين فلز ولافلز (مثل NaCl)","الرابطة التساهمية: مشاركة إلكترونات بين لا فلزين (مثل H₂O)","الرابطة الفلزية: بحر من الإلكترونات الحرة بين ذرات الفلزات"]},
+  {t:"التفاعلات الكيميائية وأنواعها", d:"التفاعل الكيميائي هو عملية تحول مواد متفاعلة إلى نواتج جديدة بخصائص مختلفة، مع حفظ الكتلة والذرات (قانون حفظ المادة).",
+   pts:["تفاعل الاتحاد: A + B → AB","تفاعل الإحلال البسيط: A + BC → AC + B","تفاعل الاحتراق، وتفاعل التعادل بين الحمض والقاعدة"]},
+  {t:"الأحماض والقواعد ومقياس pH", d:"الحمض مادة تعطي أيونات الهيدروجين (H⁺) في الماء، بينما القاعدة تعطي أيونات الهيدروكسيد (OH⁻). يقاس مستوى الحموضة بمقياس pH من 0 إلى 14.",
+   pts:["pH أقل من 7: وسط حمضي","pH يساوي 7: وسط متعادل (كالماء النقي)","pH أكبر من 7: وسط قاعدي"]},
+  {t:"المحاليل والتركيز", d:"المحلول مزيج متجانس من مذاب ومذيب. يُعبَّر عن تركيز المحلول بعدة طرق مثل المولارية (عدد المولات لكل لتر محلول).",
+   pts:["المولارية = عدد مولات المذاب ÷ حجم المحلول باللتر","المحلول المخفف يحتوي كمية قليلة من المذاب، والمركّز يحتوي كمية كبيرة","الذوبانية تتأثر بدرجة الحرارة وطبيعة المذاب والمذيب"]},
+  {t:"الحسابات الكيميائية (المول)", d:"المول هو وحدة قياس كمية المادة، ويحتوي على عدد أفوجادرو من الجسيمات (تقريبًا 6.022×10²³).",
+   pts:["عدد المولات = الكتلة بالجرام ÷ الكتلة المولية","الكتلة المولية للعنصر تساوي كتلته الذرية بوحدة g/mol","تُستخدم المعادلات الموزونة لحساب كميات المتفاعلات والنواتج"]},
+  {t:"الأكسدة والاختزال", d:"تفاعلات الأكسدة والاختزال تتضمن انتقال إلكترونات بين المواد المتفاعلة؛ فقدان الإلكترونات أكسدة، واكتسابها اختزال.",
+   pts:["العامل المؤكسد يكتسب إلكترونات ويُختزل هو نفسه","العامل المختزل يفقد إلكترونات ويتأكسد هو نفسه","تحدث هذه التفاعلات في البطاريات والصدأ والاحتراق"]},
+];
+const lessonGrid = document.getElementById('lessonGrid');
+lessons.forEach((l,i)=>{
+  const card = document.createElement('div');
+  card.className='lesson-card';
+  card.innerHTML = `<span class="num">DROOS ${String(i+1).padStart(2,'0')}</span>
+    <h3>${l.t}</h3><p>${l.d}</p>
+    <div class="lesson-body"><ul>${l.pts.map(p=>`<li>${p}</li>`).join('')}</ul></div>`;
+  card.addEventListener('click',()=>card.classList.toggle('open'));
+  lessonGrid.appendChild(card);
+});
+
+/* ---------- Periodic Table Data ---------- */
+// [num, symbol, arabicName, mass, category, period, group]
+const catNames = {alkali:"فلز قلوي",alkaline:"فلز قلوي ترابي",transition:"فلز انتقالي",post:"فلز آخر",metalloid:"شبه فلز",nonmetal:"لافلز",halogen:"هالوجين",noble:"غاز نبيل",lanth:"لانثانيد",actin:"أكتينيد"};
+const elements = [
+[1,"H","الهيدروجين","1.008","nonmetal",1,1],[2,"He","الهيليوم","4.003","noble",1,18],
+[3,"Li","الليثيوم","6.94","alkali",2,1],[4,"Be","البريليوم","9.012","alkaline",2,2],
+[5,"B","البورون","10.81","metalloid",2,13],[6,"C","الكربون","12.011","nonmetal",2,14],
+[7,"N","النيتروجين","14.007","nonmetal",2,15],[8,"O","الأكسجين","15.999","nonmetal",2,16],
+[9,"F","الفلور","18.998","halogen",2,17],[10,"Ne","النيون","20.180","noble",2,18],
+[11,"Na","الصوديوم","22.990","alkali",3,1],[12,"Mg","المغنيسيوم","24.305","alkaline",3,2],
+[13,"Al","الألومنيوم","26.982","post",3,13],[14,"Si","السيليكون","28.085","metalloid",3,14],
+[15,"P","الفوسفور","30.974","nonmetal",3,15],[16,"S","الكبريت","32.06","nonmetal",3,16],
+[17,"Cl","الكلور","35.45","halogen",3,17],[18,"Ar","الأرجون","39.948","noble",3,18],
+[19,"K","البوتاسيوم","39.098","alkali",4,1],[20,"Ca","الكالسيوم","40.078","alkaline",4,2],
+[21,"Sc","السكانديوم","44.956","transition",4,3],[22,"Ti","التيتانيوم","47.867","transition",4,4],
+[23,"V","الفاناديوم","50.942","transition",4,5],[24,"Cr","الكروم","51.996","transition",4,6],
+[25,"Mn","المنغنيز","54.938","transition",4,7],[26,"Fe","الحديد","55.845","transition",4,8],
+[27,"Co","الكوبالت","58.933","transition",4,9],[28,"Ni","النيكل","58.693","transition",4,10],
+[29,"Cu","النحاس","63.546","transition",4,11],[30,"Zn","الزنك","65.38","transition",4,12],
+[31,"Ga","الغاليوم","69.723","post",4,13],[32,"Ge","الجرمانيوم","72.630","metalloid",4,14],
+[33,"As","الزرنيخ","74.922","metalloid",4,15],[34,"Se","السيلينيوم","78.971","nonmetal",4,16],
+[35,"Br","البروم","79.904","halogen",4,17],[36,"Kr","الكريبتون","83.798","noble",4,18],
+[37,"Rb","الروبيديوم","85.468","alkali",5,1],[38,"Sr","السترونتيوم","87.62","alkaline",5,2],
+[39,"Y","الإيتريوم","88.906","transition",5,3],[40,"Zr","الزركونيوم","91.224","transition",5,4],
+[41,"Nb","النيوبيوم","92.906","transition",5,5],[42,"Mo","الموليبدنوم","95.95","transition",5,6],
+[43,"Tc","التكنيشيوم","(98)","transition",5,7],[44,"Ru","الروثينيوم","101.07","transition",5,8],
+[45,"Rh","الروديوم","102.91","transition",5,9],[46,"Pd","البلاديوم","106.42","transition",5,10],
+[47,"Ag","الفضة","107.87","transition",5,11],[48,"Cd","الكادميوم","112.41","transition",5,12],
+[49,"In","الإنديوم","114.82","post",5,13],[50,"Sn","القصدير","118.71","post",5,14],
+[51,"Sb","الأنتيمون","121.76","metalloid",5,15],[52,"Te","التيلوريوم","127.60","metalloid",5,16],
+[53,"I","اليود","126.90","halogen",5,17],[54,"Xe","الزينون","131.29","noble",5,18],
+[55,"Cs","السيزيوم","132.91","alkali",6,1],[56,"Ba","الباريوم","137.33","alkaline",6,2],
+[72,"Hf","الهافنيوم","178.49","transition",6,4],[73,"Ta","التنتالوم","180.95","transition",6,5],
+[74,"W","التنغستن","183.84","transition",6,6],[75,"Re","الرينيوم","186.21","transition",6,7],
+[76,"Os","الأوزميوم","190.23","transition",6,8],[77,"Ir","الإيريديوم","192.22","transition",6,9],
+[78,"Pt","البلاتين","195.08","transition",6,10],[79,"Au","الذهب","196.97","transition",6,11],
+[80,"Hg","الزئبق","200.59","transition",6,12],[81,"Tl","الثاليوم","204.38","post",6,13],
+[82,"Pb","الرصاص","207.2","post",6,14],[83,"Bi","البزموت","208.98","post",6,15],
+[84,"Po","البولونيوم","(209)","metalloid",6,16],[85,"At","الأستاتين","(210)","halogen",6,17],
+[86,"Rn","الرادون","(222)","noble",6,18],
+[87,"Fr","الفرانسيوم","(223)","alkali",7,1],[88,"Ra","الراديوم","(226)","alkaline",7,2],
+[104,"Rf","الرذرفوردیوم","(267)","transition",7,4],[105,"Db","الدوبنيوم","(268)","transition",7,5],
+[106,"Sg","السيبورجيوم","(271)","transition",7,6],[107,"Bh","البوريوم","(272)","transition",7,7],
+[108,"Hs","الهاسيوم","(270)","transition",7,8],[109,"Mt","المايتنيريوم","(276)","transition",7,9],
+[110,"Ds","الدارمشتاتيوم","(281)","transition",7,10],[111,"Rg","الرونتجينيوم","(280)","transition",7,11],
+[112,"Cn","الكوبرنيسيوم","(285)","transition",7,12],[113,"Nh","النيهونيوم","(284)","post",7,13],
+[114,"Fl","الفليروفيوم","(289)","post",7,14],[115,"Mc","الموسكوفيوم","(288)","post",7,15],
+[116,"Lv","الليفرموريوم","(293)","post",7,16],[117,"Ts","التنسين","(294)","halogen",7,17],
+[118,"Og","الأوغانيسون","(294)","noble",7,18],
+];
+// Lanthanides row 8, Actinides row 9
+const lanth = ["La,اللانثانوم,138.91","Ce,السيريوم,140.12","Pr,البراسيوديميوم,140.91","Nd,النيوديميوم,144.24","Pm,البروميثيوم,(145)","Sm,الساماريوم,150.36","Eu,اليوروبيوم,151.96","Gd,الغادولينيوم,157.25","Tb,التيربيوم,158.93","Dy,الديسبروسيوم,162.50","Ho,الهولميوم,164.93","Er,الإربيوم,167.26","Tm,الثوليوم,168.93","Yb,الإيتربيوم,173.05","Lu,اللوتيتيوم,174.97"];
+const actin = ["Ac,الأكتينيوم,(227)","Th,الثوريوم,232.04","Pa,البروتكتينيوم,231.04","U,اليورانيوم,238.03","Np,النبتونيوم,(237)","Pu,البلوتونيوم,(244)","Am,الأمريسيوم,(243)","Cm,الكوريوم,(247)","Bk,البركليوم,(247)","Cf,الكاليفورنيوم,(251)","Es,الأينشتاينيوم,(252)","Fm,الفيرميوم,(257)","Md,المندليفيوم,(258)","No,النوبليوم,(259)","Lr,اللورنسيوم,(266)"];
+lanth.forEach((s,i)=>{const [sym,name,mass]=s.split(",");elements.push([57+i,sym,name,mass,"lanth",8,3+i]);});
+actin.forEach((s,i)=>{const [sym,name,mass]=s.split(",");elements.push([89+i,sym,name,mass,"actin",9,3+i]);});
+
+const ptGrid = document.getElementById('ptGrid');
+// build full grid with spacers for empty cells
+const occupied = {};
+elements.forEach(e=>{occupied[e[5]+'-'+e[6]] = e;});
+for(let p=1;p<=9;p++){
+  for(let g=1;g<=18;g++){
+    const key = p+'-'+g;
+    const cell = document.createElement('div');
+    if(occupied[key]){
+      const [num,sym,name,mass,cat] = occupied[key];
+      cell.className = 'el cat-'+cat;
+      cell.innerHTML = `<span class="n">${num}</span><span class="s">${sym}</span><span class="m">${mass}</span>`;
+      cell.style.gridRow = p; cell.style.gridColumn = g;
+      cell.addEventListener('click',()=>showElement(occupied[key]));
+      cell.title = name;
+    } else {
+      cell.className = 'el spacer';
+      cell.style.gridRow = p; cell.style.gridColumn = g;
+    }
+    ptGrid.appendChild(cell);
+  }
+}
+function showElement(e){
+  const [num,sym,name,mass,cat,period,group] = e;
+  document.getElementById('detailPanel').classList.add('show');
+  const symEl = document.getElementById('detailSymbol');
+  symEl.className = 'detail-symbol cat-'+cat;
+  symEl.innerHTML = `<span class="s">${sym}</span><span class="n">${num}</span>`;
+  document.getElementById('detailName').textContent = name+" ("+sym+")";
+  document.getElementById('detailNum').textContent = num;
+  document.getElementById('detailMass').textContent = mass;
+  document.getElementById('detailCat').textContent = catNames[cat];
+  document.getElementById('detailPos').textContent = "الدورة "+period+" / المجموعة "+group;
+}
+
+/* ---------- Quiz ---------- */
+const questions = [
+  {q:"ما رمز عنصر الصوديوم؟", opts:["So","Na","Sd","S"], a:1},
+  {q:"كم عدد البروتونات في ذرة متعادلة عددها الذري 8؟", opts:["6","8","16","4"], a:1},
+  {q:"أي الروابط التالية تنشأ بين فلز ولافلز؟", opts:["تساهمية","فلزية","أيونية","هيدروجينية"], a:2},
+  {q:"ما قيمة الرقم الهيدروجيني (pH) للماء النقي؟", opts:["0","7","14","1"], a:1},
+  {q:"أي مما يلي يمثل غازًا نبيلًا؟", opts:["الكلور","الأرجون","الصوديوم","الكبريت"], a:1},
+  {q:"في التفاعل الكيميائي، ماذا يحدث للكتلة الكلية؟", opts:["تزيد", "تقل", "تبقى محفوظة", "تتلاشى"], a:2},
+  {q:"ما اسم الجسيم متعادل الشحنة داخل النواة؟", opts:["إلكترون","بروتون","نيوترون","أيون"], a:2},
+  {q:"أي العناصر التالية أكثر نشاطًا كفلز قلوي؟", opts:["الليثيوم","الصوديوم","البوتاسيوم","السيزيوم"], a:3},
+  {q:"ماذا يسمى فقدان الإلكترونات في تفاعل كيميائي؟", opts:["اختزال","أكسدة","تعادل","تبخر"], a:1},
+  {q:"وحدة قياس كمية المادة في الكيمياء هي:", opts:["الجرام","اللتر","المول","النيوتن"], a:2},
+];
+let qIndex=0, score=0;
+const quizBox = document.getElementById('quizBox');
+function renderQuiz(){
+  if(qIndex>=questions.length){
+    quizBox.innerHTML = `<div class="quiz-result">
+      <div class="score">${score}/${questions.length}</div>
+      <p>نتيجتك في الاختبار</p>
+      <button class="btn btn-primary" onclick="restartQuiz()">إعادة المحاولة</button>
+    </div>`;
+    return;
+  }
+  const item = questions[qIndex];
+  quizBox.innerHTML = `
+    <div class="quiz-progress">Q ${qIndex+1} / ${questions.length}</div>
+    <div class="quiz-bar"><div class="quiz-bar-fill" style="width:${(qIndex/questions.length)*100}%"></div></div>
+    <div class="quiz-q">${item.q}</div>
+    <div class="quiz-opts">${item.opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${o}</button>`).join('')}</div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="quiz-next" id="quizNextWrap"></div>
+  `;
+  quizBox.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const i = +btn.dataset.i;
+      quizBox.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+      if(i===item.a){
+        btn.classList.add('correct');
+        score++;
+        document.getElementById('quizFeedback').textContent = "إجابة صحيحة! أحسنت.";
+      } else {
+        btn.classList.add('wrong');
+        quizBox.querySelectorAll('.opt-btn')[item.a].classList.add('correct');
+        document.getElementById('quizFeedback').textContent = "إجابة غير صحيحة، الإجابة الصحيحة موضحة بالأخضر.";
+      }
+      document.getElementById('quizNextWrap').innerHTML = `<button class="btn btn-primary">${qIndex===questions.length-1?'عرض النتيجة':'السؤال التالي'}</button>`;
+      document.getElementById('quizNextWrap').querySelector('button').addEventListener('click',()=>{qIndex++;renderQuiz();});
+    });
+  });
+}
+function restartQuiz(){qIndex=0;score=0;renderQuiz();}
+renderQuiz();
+
+/* ---------- Virtual Lab ---------- */
+const liquidPath = document.getElementById('liquidPath');
+const phRange = document.getElementById('phRange');
+const phValue = document.getElementById('phValue');
+const labCaption = document.getElementById('labCaption');
+const labTag = document.getElementById('labTag');
+
+function phColor(v){
+  // 0 red -> 7 green -> 14 violet/blue (universal indicator-ish)
+  const colors = ["#B23A2E","#C4472E","#D66A2E","#E2A63B","#D9C23B","#9FC23B","#4FAE4F","#2F9E6E","#2E9E8E","#2E8FA0","#2E6F95","#3B5A9E","#4B4B9E","#5C3F9E","#6B2F8E"];
+  return colors[v];
+}
+function updatePh(){
+  const v = +phRange.value;
+  phValue.textContent = "pH = "+v;
+  liquidPath.setAttribute('fill', phColor(v));
+  labTag.textContent = "ACID-BASE / pH "+v;
+  if(v<7) labCaption.textContent = "المحلول حمضي — كلما قلّ الرقم زادت الحموضة (مثل عصير الليمون عند pH≈2).";
+  else if(v===7) labCaption.textContent = "المحلول متعادل، تمامًا كالماء النقي.";
+  else labCaption.textContent = "المحلول قاعدي — كلما زاد الرقم زادت القاعدية (مثل الصابون عند pH≈10).";
+}
+phRange.addEventListener('input', updatePh);
+updatePh();
+
+const flameColors = {li:"#B23A2E", na:"#E2A63B", k:"#7A5AA8", ca:"#C46A3C", cu:"#2F9E6E", sr:"#D64545"};
+const flameNames = {li:"الليثيوم يعطي لهبًا أحمر قرمزيًا",na:"الصوديوم يعطي لهبًا أصفر مميزًا",k:"البوتاسيوم يعطي لهبًا بنفسجيًا باهتًا",ca:"الكالسيوم يعطي لهبًا برتقاليًا آجريًا",cu:"النحاس يعطي لهبًا أخضر مزرقًا",sr:"السترونتيوم يعطي لهبًا أحمر ورديًا"};
+document.getElementById('flameSelect').addEventListener('change',(e)=>{
+  const v = e.target.value;
+  if(v==='none'){ updatePh(); return; }
+  liquidPath.setAttribute('fill', flameColors[v]);
+  labTag.textContent = "FLAME TEST / "+v.toUpperCase();
+  labCaption.textContent = flameNames[v]+" — تُستخدم هذه الطريقة للتعرف على أيونات الفلزات في المعمل.";
+});
+
+document.getElementById('acidReactBtn').addEventListener('click',()=>{
+  liquidPath.setAttribute('fill', "#7FA8B0");
+  labTag.textContent = "REACTION / Zn + HCl";
+  labCaption.textContent = "الزنك يتفاعل مع حمض الهيدروكلوريك منتجًا كلوريد الزنك وغاز الهيدروجين (فقاعات)، وفق: Zn + 2HCl → ZnCl₂ + H₂↑";
+  const bubblesWrap = document.getElementById('labBubbles');
+  bubblesWrap.innerHTML='';
+  for(let i=0;i<8;i++){
+    const b = document.createElement('div');
+    b.className='bubble';
+    b.style.width = b.style.height = (5+Math.random()*8)+'px';
+    b.style.left = (55+Math.random()*80)+'px';
+    b.style.animationDelay = (Math.random()*2)+'s';
+    b.style.background = 'rgba(255,255,255,0.6)';
+    bubblesWrap.appendChild(b);
+  }
+});
+</script>
+</body>
+</html>
+```
