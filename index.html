@@ -278,6 +278,23 @@ footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85re
 
 <footer>ChemLab | مختبر الكيمياء — Phase 3: المنهج الكامل متصل بقاعدة البيانات</footer>
 
+
+<!-- ===== مساعد الكيميائي ===== -->
+<button class="assistant-fab" id="assistantFab" style="display:none;">🧪</button>
+<div class="assistant-panel" id="assistantPanel">
+  <div class="assistant-head">
+    <b>🧪 مساعد الكيميائي</b>
+    <button id="assistantClose" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">×</button>
+  </div>
+  <div class="assistant-body" id="assistantBody">
+    <div class="a-msg a-bot">أهلًا! أنا مساعد الكيميائي، أجاوبك من محتوى دروس كيمياء 1 فقط. اسألني عن أي مفهوم مثل: "ما الفرق بين المخلوط والمركب؟"</div>
+  </div>
+  <div class="assistant-input-row">
+    <input type="text" id="assistantInput" placeholder="اكتب سؤالك هنا...">
+    <button class="btn btn-turq btn-sm" id="assistantSend">إرسال</button>
+  </div>
+</div>
+
 <script>
 /* ================= Supabase REST config ================= */
 const SB_URL = "https://fftwtxinptqwjzivkdhw.supabase.co";
@@ -1206,21 +1223,5 @@ document.getElementById('assistantBody').addEventListener('click', (e)=>{
   }
 });
 </script>
-<!-- ===== مساعد الكيميائي ===== -->
-<button class="assistant-fab" id="assistantFab" style="display:none;">🧪</button>
-<div class="assistant-panel" id="assistantPanel">
-  <div class="assistant-head">
-    <b>🧪 مساعد الكيميائي</b>
-    <button id="assistantClose" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">×</button>
-  </div>
-  <div class="assistant-body" id="assistantBody">
-    <div class="a-msg a-bot">أهلًا! أنا مساعد الكيميائي، أجاوبك من محتوى دروس كيمياء 1 فقط. اسألني عن أي مفهوم مثل: "ما الفرق بين المخلوط والمركب؟"</div>
-  </div>
-  <div class="assistant-input-row">
-    <input type="text" id="assistantInput" placeholder="اكتب سؤالك هنا...">
-    <button class="btn btn-turq btn-sm" id="assistantSend">إرسال</button>
-  </div>
-</div>
-
 </body>
 </html>
