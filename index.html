@@ -85,6 +85,34 @@ ul.simple-list li{margin-bottom:6px;}
 .mistake-box{background:#FCE9E9;border-radius:10px;padding:14px 18px;}
 .think-box{background:#F1EBFF;border-radius:10px;padding:14px 18px;font-style:normal;}
 
+/* virtual lab */
+.lab-box{background:linear-gradient(135deg,#0E1F1C,#122824);border-radius:16px;padding:22px;color:#F3F5EE;}
+.lab-controls-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.lab-toggle-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#F3F5EE;
+  padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.88rem;transition:.15s;}
+.lab-toggle-btn.active{background:var(--turquoise);border-color:var(--turquoise);color:#fff;}
+.lab-toggle-btn:hover{border-color:var(--turquoise);}
+.lab-panel{background:rgba(255,255,255,0.06);border-radius:12px;padding:16px 18px;font-size:.9rem;line-height:1.8;min-height:60px;}
+.lab-panel b{color:var(--turquoise);}
+.lab-visual{display:flex;justify-content:center;padding:14px 0;}
+.lab-slider-row{margin-bottom:14px;}
+.lab-slider-row label{display:block;font-size:.85rem;margin-bottom:8px;color:rgba(243,245,238,.85);}
+.lab-slider-row input[type=range]{width:100%;}
+.lab-value{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);direction:ltr;text-align:left;display:block;margin-top:6px;font-size:.85rem;}
+.atom-stepper{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.atom-stepper span{width:110px;font-size:.85rem;}
+.stepper-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:1rem;cursor:pointer;}
+.stepper-btn:hover{background:var(--turquoise);border-color:var(--turquoise);}
+.stepper-val{width:36px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:600;}
+.atom-visual{width:150px;height:150px;position:relative;margin:10px auto;}
+.atom-nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--violet) 60%);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;}
+.atom-ring{position:absolute;top:50%;left:50%;border:1.5px dashed rgba(255,255,255,.3);border-radius:50%;transform:translate(-50%,-50%);}
+.lab-reveal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
+.lab-btn-secondary{background:rgba(20,184,166,0.15);border:1px solid var(--turquoise);color:#fff;padding:11px 20px;border-radius:10px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;}
+.lab-btn-secondary:hover{background:var(--turquoise);}
+.lab-flask{width:70px;margin:0 auto;}
+
 /* quiz */
 .quiz-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:10px;}
 .qprogress{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);font-size:.8rem;margin-bottom:14px;direction:ltr;}
@@ -174,6 +202,8 @@ footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85re
     <div class="lsec"><h4>📝 ملخص الدرس</h4><ul class="simple-list" id="lessonSummary"></ul></div>
     <div class="lsec"><h4>⚠️ أخطاء شائعة</h4><div class="mistake-box" id="lessonMistakes"></div></div>
     <div class="lsec"><h4>💡 هل تعلم؟ / سؤال للتفكير</h4><div class="think-box" id="lessonThink"></div></div>
+
+    <div class="lsec"><h4>🧪 المختبر الافتراضي</h4><div class="lab-box" id="labArea"></div></div>
 
     <div class="lsec" id="quizArea">
       <h4>🎯 اختبار سريع</h4>
@@ -475,6 +505,86 @@ const curriculum = [
 ]},
 ];
 
+/* ================= Virtual Lab configs (18 experiments, no DB save) ================= */
+const labConfigs = {
+"1-1": {type:"toggle", instruction:"اضغط لمشاهدة الفرق بين ترتيب ذرات الماس والجرافيت:", options:[
+  {label:"الماس 💎", panel:"<b>ترتيب هرمي ثلاثي الأبعاد:</b> كل ذرة كربون ترتبط بـ4 ذرات أخرى بروابط قوية جدًا في كل الاتجاهات → صلابة فائقة وعزل كهربائي.", visual:"💎💎💎<br>💎💎💎<br>💎💎💎"},
+  {label:"الجرافيت ✏️", panel:"<b>طبقات سداسية مسطحة:</b> الذرات مرتبطة بقوة داخل كل طبقة، لكن الطبقات نفسها تنزلق فوق بعضها بسهولة → طري وموصل للكهرباء.", visual:"▬▬▬▬▬▬<br>▬▬▬▬▬▬<br>▬▬▬▬▬▬"}
+]},
+"1-2": {type:"reveal", instruction:"اضغط على أي عيّنة لمعرفة أي فرع من فروع الكيمياء يدرسها:", cards:[
+  {label:"💊 دواء", panel:"يندرج تحت <b>الكيمياء العضوية</b> غالبًا لأن معظم الأدوية مركبات كربونية معقدة."},
+  {label:"⚙️ سبيكة معدنية", panel:"تُدرس ضمن <b>الكيمياء غير العضوية</b> لأنها تتكون من عناصر فلزية."},
+  {label:"🩸 عينة دم", panel:"تحليل مكوناتها يندرج تحت <b>الكيمياء التحليلية</b> لتحديد نسب موادها."},
+  {label:"🔋 بطارية", panel:"تعتمد على <b>الكيمياء الفيزيائية</b> لدراسة الطاقة الناتجة عن تفاعلاتها الكهروكيميائية."}
+]},
+"1-3": {type:"reveal", instruction:"اختر متغيرًا مستقلًا لتشاهد فرضية علمية مقترحة تلقائيًا:", cards:[
+  {label:"🌡️ درجة الحرارة", panel:"<b>الفرضية المقترحة:</b> «زيادة درجة الحرارة تزيد من سرعة ذوبان السكر في الماء».<br>المتغير المستقل: الحرارة — المتغير التابع: زمن الذوبان."},
+  {label:"🧪 التركيز", panel:"<b>الفرضية المقترحة:</b> «زيادة تركيز الحمض تزيد من سرعة تفاعله مع الفلز».<br>المتغير المستقل: التركيز — المتغير التابع: سرعة التفاعل."},
+  {label:"💡 الضوء", panel:"<b>الفرضية المقترحة:</b> «زيادة شدة الضوء تزيد من سرعة عملية البناء الضوئي للنبات».<br>المتغير المستقل: شدة الضوء — المتغير التابع: معدل نمو النبات."}
+]},
+"1-4": {type:"toggle", instruction:"قارن بين نوعي البحث العلمي:", options:[
+  {label:"🔎 بحث وصفي", panel:"يعتمد على <b>الملاحظة والتصنيف</b> دون تجربة ضابطة.<br>مثال: رصد باحث لهجرة الطيور موسميًا بالتصوير والتسجيل فقط.", visual:"👁️ ← 📝"},
+  {label:"⚗️ بحث تجريبي", panel:"يختبر <b>فرضية عبر تجربة مضبوطة</b> بمتغيرات محددة (مستقل، تابع، ضابط).<br>مثال: قياس أثر الحرارة على سرعة تفاعل كيميائي في المعمل.", visual:"⚗️ ← 📊"}
+]},
+"2-1": {type:"reveal", instruction:"اضغط على كل خاصية لمعرفة تصنيفها (لقطعة حديد):", cards:[
+  {label:"لون رمادي لامع", panel:"<b>خاصية فيزيائية</b> — تُلاحظ دون تغيير تركيب المادة الكيميائي."},
+  {label:"نقطة انصهار 1538°م", panel:"<b>خاصية فيزيائية</b> — تُقاس دون حدوث أي تفاعل كيميائي."},
+  {label:"القابلية للصدأ", panel:"<b>خاصية كيميائية</b> — تظهر فقط عند تفاعل الحديد مع الأكسجين والرطوبة لتكوين مادة جديدة."},
+  {label:"التوصيل الكهربائي", panel:"<b>خاصية فيزيائية</b> — تُقاس دون تغيير هوية المادة."}
+]},
+"2-2": {type:"toggle", instruction:"غيّر حالة الماء أو جرّب تغييرًا كيميائيًا وشاهد التصنيف:", options:[
+  {label:"🧊 ثلج", panel:"<b>تغير فيزيائي (حالة صلبة):</b> نفس جزيئات الماء H₂O، فقط مرتبة بإحكام بفعل البرودة.", visual:"🧊🧊🧊"},
+  {label:"💧 ماء سائل", panel:"<b>تغير فيزيائي (انصهار):</b> نفس التركيب الكيميائي H₂O، تغيرت فقط الحالة الفيزيائية — قابل للعكس بالتجميد.", visual:"💧💧💧"},
+  {label:"💨 بخار", panel:"<b>تغير فيزيائي (تبخر):</b> ما زال H₂O، فقط الجزيئات ابتعدت عن بعضها بفعل الحرارة.", visual:"💨💨💨"},
+  {label:"🔥 حرق ورقة", panel:"<b>تغير كيميائي!</b> الورق تحوّل لرماد وثاني أكسيد كربون وبخار ماء — مواد جديدة كليًا لا يمكن الرجوع منها للورق الأصلي.", visual:"📄→🔥→⬛"}
+]},
+"2-3": {type:"mix", instruction:"اخلط رملًا وملحًا وماءً، ثم اختر طريقة فصل مناسبة:", mixLabel:"اخلط المكونات 🧂+💧+🏖️",
+  afterMix:"تكوّن مخلوط غير متجانس: حبيبات الرمل ظاهرة، والملح ذاب في الماء.",
+  methods:[
+    {label:"🔍 الترشيح", panel:"<b>ناجح جزئيًا:</b> يفصل الرمل الصلب عن محلول الملح المائي، لكن الملح يبقى ذائبًا في الماء الراشح."},
+    {label:"🔥 التبخير", panel:"<b>ناجح:</b> بتسخين محلول الملح بعد الترشيح، يتبخر الماء تاركًا بلورات الملح الصلبة نقية."}
+  ]},
+"2-4": {type:"mix", instruction:"ادمج عنصري الهيدروجين والأكسجين وشاهد الناتج:", mixLabel:"ادمج H₂ + O₂ 🔥",
+  afterMix:"<b>تكوّن مركّب جديد: الماء H₂O!</b><br>لاحظ أن خواص الماء (سائل، يُطفئ النار) مختلفة تمامًا عن خواص غازي الهيدروجين والأكسجين الأصليين — لأنهما اتحدا كيميائيًا بنسبة ثابتة (2:1) وليس مجرد خلط فيزيائي.",
+  methods:[]},
+"3-1": {type:"toggle", instruction:"تنقّل بين النماذج التاريخية لفهم تطور فكرة الذرة:", options:[
+  {label:"ديمقريطس (فلسفي)", panel:"افترض أن المادة تتكون من جسيمات غير قابلة للانقسام «أتوموس» — <b>دون أي دليل تجريبي</b>، مجرد تخمين فلسفي.", visual:"⚫ (كتلة مصمتة)"},
+  {label:"دالتون (1803)", panel:"أول <b>نظرية علمية</b> للذرة: كرة صلبة مصمتة، وذرات العنصر الواحد متماثلة تمامًا.", visual:"⚫ كرة صلبة"},
+  {label:"طومسون (1897)", panel:"اكتشف <b>الإلكترون</b> واقترح نموذج «كعكة الزبيب»: كرة موجبة مع إلكترونات سالبة موزعة بداخلها.", visual:"⚫ مع نقاط سالبة (−)"},
+  {label:"رذرفورد (1911)", panel:"أثبت وجود <b>نواة صغيرة كثيفة موجبة</b> في المركز، ومعظم حجم الذرة فراغ تدور فيه الإلكترونات.", visual:"• (نواة صغيرة) + مدارات فارغة"}
+]},
+"3-2": {type:"atom-builder", instruction:"أضف بروتونات ونيوترونات وإلكترونات وشاهد أي عنصر يتكوّن:", fixNeutrons:false},
+"3-3": {type:"atom-builder", instruction:"ثبّت عدد البروتونات (6 = كربون) وغيّر عدد النيوترونات لصنع نظائر مختلفة:", fixProtons:6},
+"3-4": {type:"reveal", instruction:"اضغط على نوع الإشعاع لمعرفة قوة اختراقه وما يوقفه:", cards:[
+  {label:"☢️ ألفا (α)", panel:"<b>ضعيف الاختراق</b> — عبارة عن نواة هيليوم ثقيلة، تكفي ورقة عادية لإيقافه تمامًا."},
+  {label:"☢️ بيتا (β)", panel:"<b>اختراق متوسط</b> — إلكترون سريع، يحتاج صفيحة ألمنيوم رقيقة لإيقافه."},
+  {label:"☢️ جاما (γ)", panel:"<b>اختراق شديد جدًا</b> — موجة كهرومغناطيسية عالية الطاقة، تحتاج حاجز رصاص أو خرسانة سميكة لإيقافها."}
+]},
+"4-1": {type:"balancer", instruction:"وازن المعادلة بالضغط على + و− أمام كل معامل حتى يتساوى عدد الذرات:",
+  reactants:[{sym:"H₂",count:2},{sym:"O₂",count:1}], products:[{sym:"H₂O",count:2}],
+  atomsPer:{"H₂":{H:2}, "O₂":{O:2}, "H₂O":{H:2,O:1}}, target:{H2:2,O2:1,H2O:2}},
+"4-2": {type:"reveal", instruction:"اضغط على معادلة لتصنيف نوع التفاعل:", cards:[
+  {label:"2H₂+O₂→2H₂O", panel:"<b>تفاعل اتحاد (تكوين):</b> مادتان تتحدان لتكوين مادة واحدة جديدة."},
+  {label:"2H₂O₂→2H₂O+O₂", panel:"<b>تفاعل تفكك:</b> مادة واحدة تتفكك إلى مادتين أو أكثر."},
+  {label:"Zn+2HCl→ZnCl₂+H₂", panel:"<b>إحلال أحادي (بسيط):</b> عنصر منفرد يحل محل عنصر آخر في مركّب."},
+  {label:"AgNO₃+NaCl→AgCl+NaNO₃", panel:"<b>إحلال ثنائي (مزدوج):</b> مركبان يتبادلان الأيونات فيما بينهما."}
+]},
+"4-3": {type:"mix", instruction:"اخلط محلولي نترات الفضة وكلوريد الصوديوم:", mixLabel:"اخلط AgNO₃ + NaCl 🧪",
+  afterMix:"<b>يتكوّن راسب أبيض غائم فورًا!</b><br>المعادلة الكاملة: AgNO₃ + NaCl → AgCl↓ + NaNO₃<br>المعادلة الأيونية الصافية (بعد حذف الأيونات المتفرجة Na⁺ و NO₃⁻): <b>Ag⁺ + Cl⁻ → AgCl↓</b>",
+  methods:[]},
+"5-1": {type:"mole-slider", instruction:"حرّك المؤشر لتغيير عدد المولات وشاهد عدد الجسيمات الفعلي:", mode:"particles"},
+"5-2": {type:"mole-slider", instruction:"اختر عنصرًا وحرّك المؤشر لتغيير الكتلة بالجرام لحساب عدد المولات:", mode:"mass",
+  elements:[{name:"الحديد Fe", molar:55.85},{name:"الألومنيوم Al", molar:26.98},{name:"النحاس Cu", molar:63.55}]},
+"5-3": {type:"mole-slider", instruction:"اختر مركّبًا لحساب كتلته المولية تلقائيًا من عناصره:", mode:"compound",
+  compounds:[
+    {name:"الماء H₂O", parts:[{sym:"H",count:2,mass:1},{sym:"O",count:1,mass:16}]},
+    {name:"ثاني أكسيد الكربون CO₂", parts:[{sym:"C",count:1,mass:12},{sym:"O",count:2,mass:16}]},
+    {name:"كلوريد الصوديوم NaCl", parts:[{sym:"Na",count:1,mass:23},{sym:"Cl",count:1,mass:35.5}]}
+  ]},
+};
+
+const elementNames = {1:"هيدروجين H",2:"هيليوم He",3:"ليثيوم Li",4:"بريليوم Be",5:"بورون B",6:"كربون C",7:"نيتروجين N",8:"أكسجين O",9:"فلور F",10:"نيون Ne",11:"صوديوم Na",12:"مغنيسيوم Mg",13:"ألومنيوم Al",14:"سيليكون Si",15:"فوسفور P",16:"كبريت S",17:"كلور Cl",18:"أرجون Ar",19:"بوتاسيوم K",20:"كالسيوم Ca"};
+
 /* ================= State ================= */
 let currentStudent = null;
 let currentLesson = null;
@@ -628,10 +738,231 @@ function openLesson(lesson){
   document.getElementById('lessonSummary').innerHTML = lesson.summary.map(s=>`<li>${s}</li>`).join('');
   document.getElementById('lessonMistakes').textContent = lesson.mistakes;
   document.getElementById('lessonThink').textContent = lesson.think;
+  renderLab(lesson.code);
   document.getElementById('quizContainer').innerHTML='';
   document.getElementById('startQuizBtn').style.display='inline-block';
   document.getElementById('startQuizBtn').textContent = 'ابدأ الاختبار السريع';
   showView('view-lesson');
+}
+
+/* ================= Virtual Lab render engine ================= */
+function renderLab(code){
+  const lab = labConfigs[code];
+  const area = document.getElementById('labArea');
+  if(!lab){ area.innerHTML = '<div class="lab-panel">لا توجد تجربة لهذا الدرس بعد.</div>'; return; }
+  if(lab.type==='toggle') return renderLabToggle(area, lab);
+  if(lab.type==='reveal') return renderLabReveal(area, lab);
+  if(lab.type==='mix') return renderLabMix(area, lab);
+  if(lab.type==='atom-builder') return renderLabAtomBuilder(area, lab);
+  if(lab.type==='balancer') return renderLabBalancer(area, lab);
+  if(lab.type==='mole-slider') return renderLabMoleSlider(area, lab);
+}
+
+function renderLabToggle(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="lab-controls-row" id="toggleBtns"></div>
+    <div class="lab-visual" id="toggleVisual" style="font-size:1.6rem;"></div>
+    <div class="lab-panel" id="togglePanel"></div>`;
+  const btnsWrap = area.querySelector('#toggleBtns');
+  lab.options.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='lab-toggle-btn'+(i===0?' active':'');
+    b.textContent = opt.label;
+    b.onclick = ()=>{
+      btnsWrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      area.querySelector('#togglePanel').innerHTML = opt.panel;
+      area.querySelector('#toggleVisual').innerHTML = opt.visual||'';
+    };
+    btnsWrap.appendChild(b);
+  });
+  area.querySelector('#togglePanel').innerHTML = lab.options[0].panel;
+  area.querySelector('#toggleVisual').innerHTML = lab.options[0].visual||'';
+}
+
+function renderLabReveal(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="lab-reveal-grid" id="revealBtns"></div>
+    <div class="lab-panel" id="revealPanel">اضغط على أحد الخيارات أعلاه لعرض النتيجة هنا.</div>`;
+  const wrap = area.querySelector('#revealBtns');
+  lab.cards.forEach(c=>{
+    const b = document.createElement('button');
+    b.className='lab-toggle-btn';
+    b.textContent = c.label;
+    b.onclick = ()=>{
+      wrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      area.querySelector('#revealPanel').innerHTML = c.panel;
+    };
+    wrap.appendChild(b);
+  });
+}
+
+function renderLabMix(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div style="text-align:center;">
+      <div class="lab-flask" id="mixFlask">
+        <svg viewBox="0 0 200 260"><path d="M78 15H122V95L168 225C173 240 162 252 147 252H53C38 252 27 240 32 225L78 95V15Z" fill="rgba(255,255,255,0.08)" stroke="#F3F5EE" stroke-width="4"/>
+        <path id="mixLiquid" d="M40 200C60 192 140 192 160 200L148 240C146 245 144 247 140 247H60C56 247 54 245 52 240L40 200Z" fill="#2E6F95" opacity="0.5"/></svg>
+      </div>
+      <button class="lab-btn-secondary" id="mixBtn">${lab.mixLabel}</button>
+    </div>
+    <div class="lab-panel" id="mixPanel" style="margin-top:14px;">اضغط الزر أعلاه لبدء التجربة.</div>
+    <div class="lab-controls-row" id="mixMethods" style="margin-top:10px;"></div>`;
+  area.querySelector('#mixBtn').onclick = ()=>{
+    area.querySelector('#mixLiquid').setAttribute('fill', '#E8E8E8');
+    area.querySelector('#mixLiquid').setAttribute('opacity','0.9');
+    area.querySelector('#mixPanel').innerHTML = lab.afterMix;
+    if(lab.methods && lab.methods.length){
+      const mWrap = area.querySelector('#mixMethods');
+      mWrap.innerHTML='';
+      lab.methods.forEach(m=>{
+        const b = document.createElement('button');
+        b.className='lab-toggle-btn';
+        b.textContent = m.label;
+        b.onclick = ()=>{ area.querySelector('#mixPanel').innerHTML = m.panel; };
+        mWrap.appendChild(b);
+      });
+    }
+  };
+}
+
+function renderLabAtomBuilder(area, lab){
+  let p = lab.fixProtons || 1, n = 1, e = lab.fixProtons || 1;
+  const fixedP = !!lab.fixProtons;
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="atom-visual" id="atomVisual">
+      <div class="atom-ring" style="width:80px;height:80px;"></div>
+      <div class="atom-ring" style="width:120px;height:120px;"></div>
+      <div class="atom-nucleus" id="atomNucleus"></div>
+    </div>
+    <div id="steppers"></div>
+    <div class="lab-panel" id="atomPanel"></div>`;
+  const steppers = area.querySelector('#steppers');
+  function makeStepper(labelText, get, set, min, disabled){
+    const row = document.createElement('div');
+    row.className='atom-stepper';
+    row.innerHTML = `<span>${labelText}</span>
+      <button class="stepper-btn" ${disabled?'disabled':''}>−</button>
+      <span class="stepper-val">${get()}</span>
+      <button class="stepper-btn" ${disabled?'disabled':''}>+</button>`;
+    const [minusBtn, plusBtn] = row.querySelectorAll('.stepper-btn');
+    const valSpan = row.querySelector('.stepper-val');
+    minusBtn.onclick = ()=>{ if(get()>min){ set(get()-1); valSpan.textContent=get(); update(); } };
+    plusBtn.onclick = ()=>{ set(get()+1); valSpan.textContent=get(); update(); };
+    steppers.appendChild(row);
+  }
+  makeStepper('بروتونات (+)', ()=>p, v=>p=v, 1, fixedP);
+  makeStepper('نيوترونات (0)', ()=>n, v=>n=v, 0, false);
+  if(!fixedP) makeStepper('إلكترونات (−)', ()=>e, v=>e=v, 0, false);
+
+  function update(){
+    const mass = p+n;
+    const charge = p-e;
+    const name = elementNames[p] || `عنصر رقم ${p} (خارج نطاق الأمثلة)`;
+    document.getElementById('atomNucleus').textContent = 'Z='+p;
+    document.getElementById('atomPanel').innerHTML = `
+      <b>العنصر:</b> ${name}<br>
+      <b>العدد الذري (Z):</b> ${p} — <b>العدد الكتلي (A):</b> ${mass}<br>
+      ${!fixedP ? `<b>الشحنة الكلية:</b> ${charge===0?'متعادلة (ذرة)':(charge>0?`أيون موجب (+${charge})`:`أيون سالب (${charge})`)}` : `<b>هذا نظير كربون-${mass}</b> بعدد نيوترونات = ${n}`}`;
+  }
+  update();
+}
+
+function renderLabBalancer(area, lab){
+  let counts = {H2:lab.target.H2 - 1 + 1, O2:lab.target.O2, H2O:1}; // start unbalanced intentionally
+  counts = {H2:1, O2:1, H2O:1};
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div id="balancerRow" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;"></div>
+    <div class="lab-panel" id="balancerPanel" style="margin-top:14px;"></div>`;
+  const row = area.querySelector('#balancerRow');
+
+  function makeCoef(key, formula, isLast){
+    const wrap = document.createElement('span');
+    wrap.style.display='flex'; wrap.style.alignItems='center'; wrap.style.gap='6px';
+    wrap.innerHTML = `<button class="stepper-btn">−</button><span id="c_${key}">${counts[key]}</span><button class="stepper-btn">+</button> ${formula} ${isLast?'':'+'}`;
+    const [minus, plus] = wrap.querySelectorAll('.stepper-btn');
+    minus.onclick=()=>{ if(counts[key]>1){counts[key]--; wrap.querySelector('#c_'+key).textContent=counts[key]; check();} };
+    plus.onclick=()=>{ counts[key]++; wrap.querySelector('#c_'+key).textContent=counts[key]; check(); };
+    return wrap;
+  }
+  row.appendChild(makeCoef('H2','H₂',false));
+  row.appendChild(makeCoef('O2','O₂',false));
+  const arrow = document.createElement('span'); arrow.textContent='→'; row.appendChild(arrow);
+  row.appendChild(makeCoef('H2O','H₂O',true));
+
+  function check(){
+    const Hleft = counts.H2*2, Oleft = counts.O2*2;
+    const Hright = counts.H2O*2, Oright = counts.H2O*1;
+    const balanced = (Hleft===Hright) && (Oleft===Oright);
+    document.getElementById('balancerPanel').innerHTML = balanced
+      ? `<b style="color:#7BE0A0;">✅ متزنة!</b> عدد ذرات الهيدروجين (${Hleft}) وعدد ذرات الأكسجين (${Oleft}) متساوٍ في الطرفين.`
+      : `عدد الهيدروجين: يسار ${Hleft} — يمين ${Hright} | عدد الأكسجين: يسار ${Oleft} — يمين ${Oright}. عدّل المعاملات حتى تتساوى الأعداد.`;
+  }
+  check();
+}
+
+function renderLabMoleSlider(area, lab){
+  const NA = 6.022e23;
+  if(lab.mode==='particles'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-slider-row"><label>عدد المولات</label>
+      <input type="range" id="moleSlider" min="0" max="3" step="0.25" value="1">
+      <span class="lab-value" id="moleVal">n = 1 مول</span></div>
+      <div class="lab-panel" id="molePanel"></div>`;
+    const slider = area.querySelector('#moleSlider');
+    function upd(){
+      const n = +slider.value;
+      area.querySelector('#moleVal').textContent = `n = ${n} مول`;
+      const particles = (n*NA).toExponential(3);
+      area.querySelector('#molePanel').innerHTML = `عدد الجسيمات = n × عدد أفوجادرو = ${n} × 6.022×10²³ = <b>${particles} جسيم</b>`;
+    }
+    slider.oninput = upd; upd();
+  }
+  if(lab.mode==='mass'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-controls-row" id="elBtns"></div>
+      <div class="lab-slider-row"><label>الكتلة (جرام)</label>
+      <input type="range" id="massSlider" min="1" max="200" step="1" value="50">
+      <span class="lab-value" id="massVal">50 جرام</span></div>
+      <div class="lab-panel" id="massPanel"></div>`;
+    let selectedEl = lab.elements[0];
+    const elWrap = area.querySelector('#elBtns');
+    lab.elements.forEach((el,i)=>{
+      const b = document.createElement('button');
+      b.className='lab-toggle-btn'+(i===0?' active':'');
+      b.textContent = el.name;
+      b.onclick = ()=>{ elWrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); selectedEl=el; upd(); };
+      elWrap.appendChild(b);
+    });
+    const slider = area.querySelector('#massSlider');
+    function upd(){
+      const mass = +slider.value;
+      area.querySelector('#massVal').textContent = mass+' جرام';
+      const moles = (mass/selectedEl.molar).toFixed(3);
+      area.querySelector('#massPanel').innerHTML = `عدد المولات = الكتلة ÷ الكتلة المولية = ${mass} ÷ ${selectedEl.molar} = <b>${moles} مول</b> من ${selectedEl.name}`;
+    }
+    slider.oninput = upd; upd();
+  }
+  if(lab.mode==='compound'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-controls-row" id="cmpBtns"></div>
+      <div class="lab-panel" id="cmpPanel"></div>`;
+    const wrap = area.querySelector('#cmpBtns');
+    function show(cmp){
+      const breakdown = cmp.parts.map(p=>`${p.sym}×${p.count} = ${p.count*p.mass}`).join(' + ');
+      const total = cmp.parts.reduce((a,p)=>a+p.count*p.mass,0);
+      area.querySelector('#cmpPanel').innerHTML = `${breakdown} = <b>${total} g/mol</b> للكتلة المولية الكلية لـ${cmp.name}`;
+    }
+    lab.compounds.forEach((cmp,i)=>{
+      const b = document.createElement('button');
+      b.className='lab-toggle-btn'+(i===0?' active':'');
+      b.textContent = cmp.name;
+      b.onclick = ()=>{ wrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); show(cmp); };
+      wrap.appendChild(b);
+    });
+    show(lab.compounds[0]);
+  }
 }
 
 /* ================= Quiz engine ================= */
