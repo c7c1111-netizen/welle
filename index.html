@@ -33,6 +33,24 @@ h1,h2,h3{font-family:'Cairo',sans-serif;}
 .btn-sm{padding:8px 16px;font-size:.85rem;}
 .btn:disabled{opacity:.55;cursor:not-allowed;}
 
+/* login chemistry background */
+.auth-bg-wrap{
+  position:relative;min-height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(45,93,168,0.10), transparent 55%),
+    radial-gradient(circle at 85% 75%, rgba(20,184,166,0.12), transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(124,92,252,0.08), transparent 60%);
+  border-radius:24px;overflow:hidden;
+}
+.auth-bg-icon{position:absolute;font-size:2.1rem;opacity:.35;animation:authFloat 7s ease-in-out infinite;}
+@keyframes authFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(8deg);}}
+.auth-orbit{position:absolute;top:50%;left:50%;border:1.5px dashed rgba(45,93,168,.18);border-radius:50%;transform:translate(-50%,-50%);}
+.auth-orbit-1{width:340px;height:340px;animation:spinAuth 14s linear infinite;}
+.auth-orbit-2{width:480px;height:480px;animation:spinAuth 20s linear infinite reverse;}
+@keyframes spinAuth{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+.auth-electron{position:absolute;top:-5px;left:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:var(--turquoise);box-shadow:0 0 10px var(--turquoise);}
+.auth-orbit-2 .auth-electron{background:var(--violet);box-shadow:0 0 10px var(--violet);}
+
 .wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px;}
 .view{display:none;}
 .view.active{display:block;animation:fade .3s ease;}
@@ -171,7 +189,7 @@ footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85re
 </head>
 <body>
 
-<div class="phase-note">⚙️ Phase 3 — المنهج الكامل (18 درسًا) + اختبارات حقيقية محفوظة بقاعدة البيانات</div>
+<div class="phase-note">✅ النسخة الكاملة — المنهج (18 درسًا) + مختبر افتراضي + اختبارات + شارات + بحث + مساعد الكيميائي، متصلة بقاعدة بياناتك</div>
 
 <nav class="nav">
   <div class="nav-inner">
@@ -184,7 +202,15 @@ footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85re
 
   <!-- ===== AUTH ===== -->
   <div class="view active" id="view-auth">
-    <div class="card" style="max-width:460px;margin:20px auto;">
+    <div class="auth-bg-wrap">
+      <div class="auth-bg-icon" style="top:8%;right:10%;animation-delay:0s;">🧪</div>
+      <div class="auth-bg-icon" style="top:18%;left:8%;animation-delay:1.4s;">⚗️</div>
+      <div class="auth-bg-icon" style="bottom:14%;right:14%;animation-delay:2.6s;">🔬</div>
+      <div class="auth-bg-icon" style="bottom:22%;left:12%;animation-delay:3.6s;">💧</div>
+      <div class="auth-bg-icon" style="top:45%;right:4%;animation-delay:1.9s;">⚛️</div>
+      <div class="auth-orbit auth-orbit-1"><span class="auth-electron"></span></div>
+      <div class="auth-orbit auth-orbit-2"><span class="auth-electron"></span></div>
+      <div class="card" style="max-width:460px;margin:20px auto;position:relative;z-index:2;">
       <div class="tabs-switch">
         <button id="tabLogin" class="active">تسجيل الدخول</button>
         <button id="tabRegister">حساب جديد</button>
@@ -206,6 +232,7 @@ footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85re
           <div class="hint">احفظ هذا الرمز جيدًا — تحتاجه لتسجيل الدخول لاحقًا.</div></div>
         <button class="btn btn-primary" style="width:100%" id="registerBtn">إنشاء الحساب والدخول</button>
       </form>
+      </div>
     </div>
   </div>
 
