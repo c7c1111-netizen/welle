@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChemLab | مختبر الكيمياء</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2D5DA8; --blue-deep:#1E4380; --turquoise:#14B8A6; --violet:#7C5CFC;
+  --sky:#F5F8FC; --ink:#122036; --ink-soft:#5A6B85; --line:rgba(18,32,54,0.09);
+  --radius:18px; --danger:#D64545; --success:#1FA971;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:'Tajawal',sans-serif;line-height:1.75;}
+h1,h2,h3{font-family:'Cairo',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;display:inline-block;}
+.phase-note{background:#FFF7E6;color:#7A5B12;border-bottom:1px solid #F0DDA0;text-align:center;padding:10px 16px;font-size:.85rem;font-weight:700;}
+
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.nav-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Cairo',sans-serif;font-weight:800;font-size:1.15rem;color:var(--blue-deep);cursor:pointer;}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:conic-gradient(from 200deg,var(--blue),var(--turquoise) 45%,var(--violet) 80%,var(--blue));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:600;}
+.nav-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.pill{background:var(--sky);border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:.85rem;font-weight:700;color:var(--ink-soft);}
+.btn{border:none;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.95rem;padding:11px 22px;border-radius:12px;transition:.2s;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue-deep);}
+.btn-ghost{background:transparent;color:var(--blue-deep);border:1.5px solid var(--blue);}
+.btn-ghost:hover{background:#EAF1FB;}
+.btn-turq{background:var(--turquoise);color:#fff;}
+.btn-sm{padding:8px 16px;font-size:.85rem;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+/* login chemistry background */
+.auth-bg-wrap{
+  position:relative;min-height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(45,93,168,0.10), transparent 55%),
+    radial-gradient(circle at 85% 75%, rgba(20,184,166,0.12), transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(124,92,252,0.08), transparent 60%);
+  border-radius:24px;overflow:hidden;
+}
+.auth-bg-icon{position:absolute;font-size:2.1rem;opacity:.35;animation:authFloat 7s ease-in-out infinite;}
+@keyframes authFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(8deg);}}
+.auth-orbit{position:absolute;top:50%;left:50%;border:1.5px dashed rgba(45,93,168,.18);border-radius:50%;transform:translate(-50%,-50%);}
+.auth-orbit-1{width:340px;height:340px;animation:spinAuth 14s linear infinite;}
+.auth-orbit-2{width:480px;height:480px;animation:spinAuth 20s linear infinite reverse;}
+@keyframes spinAuth{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+.auth-electron{position:absolute;top:-5px;left:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:var(--turquoise);box-shadow:0 0 10px var(--turquoise);}
+.auth-orbit-2 .auth-electron{background:var(--violet);box-shadow:0 0 10px var(--violet);}
+
+.wrap{max-width:900px;margin:0 auto;padding:32px 20px 80px;}
+.view{display:none;}
+.view.active{display:block;animation:fade .3s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:0 12px 30px rgba(18,32,54,.06);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px;color:var(--ink-soft);}
+.field input,.field select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);font-family:'Tajawal',sans-serif;background:var(--sky);font-size:.95rem;}
+.hint{font-size:.78rem;color:var(--ink-soft);margin-top:4px;}
+.msg{padding:12px 16px;border-radius:10px;font-size:.88rem;margin-bottom:16px;display:none;}
+.msg.show{display:block;}
+.msg.err{background:#FCE9E9;color:var(--danger);}
+.msg.ok{background:#E7F8F1;color:var(--success);}
+
+.tabs-switch{display:flex;gap:8px;margin-bottom:24px;background:var(--sky);padding:5px;border-radius:12px;width:fit-content;}
+.tabs-switch button{border:none;background:transparent;padding:9px 20px;border-radius:9px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;color:var(--ink-soft);}
+.tabs-switch button.active{background:#fff;color:var(--blue-deep);box-shadow:0 3px 10px rgba(18,32,54,.08);}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;}
+.stat-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;}
+.stat-box b{display:block;font-family:'Cairo',sans-serif;font-size:1.4rem;color:var(--blue-deep);}
+.stat-box span{font-size:.78rem;color:var(--ink-soft);}
+
+.chapter-block{margin-bottom:26px;}
+.chapter-block h3{display:flex;align-items:center;gap:10px;font-size:1.05rem;margin:0 0 12px;}
+.chapter-block .cbadge{background:var(--turquoise);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:.72rem;padding:4px 10px;border-radius:999px;}
+.lesson-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;cursor:pointer;transition:.15s;}
+.lesson-row:hover{border-color:var(--turquoise);transform:translateX(-2px);}
+.lesson-row .code{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);font-size:.78rem;margin-inline-end:10px;}
+.badge-done{background:#E7F8F1;color:var(--success);font-size:.76rem;font-weight:700;padding:4px 12px;border-radius:999px;}
+.badge-todo{background:var(--sky);color:var(--ink-soft);font-size:.76rem;font-weight:700;padding:4px 12px;border-radius:999px;}
+
+.back-btn{background:none;border:none;color:var(--blue-deep);font-weight:700;cursor:pointer;font-size:.9rem;margin-bottom:18px;padding:0;}
+.lesson-code-tag{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);font-size:.82rem;}
+.video-frame{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:14px;overflow:hidden;margin:18px 0;}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.lsec{margin:26px 0;}
+.lsec h4{font-size:1rem;color:var(--blue-deep);margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+.lsec p{color:var(--ink);font-size:.95rem;}
+.intro-box{background:linear-gradient(135deg,#EAF1FB,#F5F8FC);border-radius:14px;padding:18px 20px;font-size:.98rem;}
+table.data-table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px;}
+table.data-table th, table.data-table td{border:1px solid var(--line);padding:9px 12px;text-align:right;}
+table.data-table th{background:var(--sky);font-weight:700;}
+.example-box{background:#F5F8FC;border-inline-start:4px solid var(--violet);border-radius:10px;padding:16px 18px;font-size:.92rem;}
+.example-box .step{margin-bottom:6px;}
+ul.simple-list{margin:8px 0 0;padding-inline-start:20px;font-size:.92rem;}
+ul.simple-list li{margin-bottom:6px;}
+.mistake-box{background:#FCE9E9;border-radius:10px;padding:14px 18px;}
+.think-box{background:#F1EBFF;border-radius:10px;padding:14px 18px;font-style:normal;}
+
+/* virtual lab */
+.lab-box{background:linear-gradient(135deg,#0E1F1C,#122824);border-radius:16px;padding:22px;color:#F3F5EE;}
+.lab-controls-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.lab-toggle-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#F3F5EE;
+  padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.88rem;transition:.15s;}
+.lab-toggle-btn.active{background:var(--turquoise);border-color:var(--turquoise);color:#fff;}
+.lab-toggle-btn:hover{border-color:var(--turquoise);}
+.lab-panel{background:rgba(255,255,255,0.06);border-radius:12px;padding:16px 18px;font-size:.9rem;line-height:1.8;min-height:60px;}
+.lab-panel b{color:var(--turquoise);}
+.lab-visual{display:flex;justify-content:center;padding:14px 0;}
+.lab-slider-row{margin-bottom:14px;}
+.lab-slider-row label{display:block;font-size:.85rem;margin-bottom:8px;color:rgba(243,245,238,.85);}
+.lab-slider-row input[type=range]{width:100%;}
+.lab-value{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);direction:ltr;text-align:left;display:block;margin-top:6px;font-size:.85rem;}
+.atom-stepper{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.atom-stepper span{width:110px;font-size:.85rem;}
+.stepper-btn{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:1rem;cursor:pointer;}
+.stepper-btn:hover{background:var(--turquoise);border-color:var(--turquoise);}
+.stepper-val{width:36px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:600;}
+.atom-visual{width:150px;height:150px;position:relative;margin:10px auto;}
+.atom-nucleus{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--violet) 60%);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;}
+.atom-ring{position:absolute;top:50%;left:50%;border:1.5px dashed rgba(255,255,255,.3);border-radius:50%;transform:translate(-50%,-50%);}
+.lab-reveal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
+.lab-btn-secondary{background:rgba(20,184,166,0.15);border:1px solid var(--turquoise);color:#fff;padding:11px 20px;border-radius:10px;cursor:pointer;font-weight:700;font-family:'Tajawal',sans-serif;}
+.lab-btn-secondary:hover{background:var(--turquoise);}
+.lab-flask{width:70px;margin:0 auto;}
+
+/* quiz */
+.quiz-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:10px;}
+.qprogress{font-family:'IBM Plex Mono',monospace;color:var(--turquoise);font-size:.8rem;margin-bottom:14px;direction:ltr;}
+.qtext{font-weight:700;font-size:1.02rem;margin-bottom:16px;}
+.opt-btn{display:block;width:100%;text-align:right;background:var(--sky);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:9px;cursor:pointer;font-family:'Tajawal',sans-serif;font-size:.92rem;}
+.opt-btn:hover{border-color:var(--turquoise);}
+.opt-btn.correct{background:#E7F8F1;border-color:var(--success);}
+.opt-btn.wrong{background:#FCE9E9;border-color:var(--danger);}
+.opt-btn:disabled{cursor:default;}
+.quiz-result{text-align:center;padding:20px 0;}
+.quiz-result .sc{font-family:'Cairo',sans-serif;font-size:2.4rem;font-weight:800;color:var(--blue-deep);}
+
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+th,td{padding:12px 10px;text-align:right;border-bottom:1px solid var(--line);}
+th{color:var(--ink-soft);font-size:.8rem;font-weight:700;}
+tr:hover td{background:var(--sky);}
+
+.spinner{width:16px;height:16px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+/* badges */
+.badges-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:26px;}
+.badge-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 10px;text-align:center;}
+.badge-card.locked{opacity:.4;}
+.badge-card .bicon{font-size:1.8rem;display:block;margin-bottom:6px;}
+.badge-card .bname{font-size:.78rem;font-weight:700;color:var(--ink-soft);}
+
+/* search */
+.search-wrap{margin-bottom:20px;}
+#searchInput{width:100%;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:#fff;font-family:'Tajawal',sans-serif;font-size:.95rem;}
+#searchInput:focus{outline:2px solid var(--turquoise);}
+
+/* assistant */
+.assistant-fab{
+  position:fixed;bottom:22px;left:22px;width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--turquoise));border:none;color:#fff;font-size:1.5rem;
+  cursor:pointer;box-shadow:0 10px 24px rgba(18,32,54,.25);z-index:90;
+}
+.assistant-panel{
+  display:none;position:fixed;bottom:90px;left:22px;width:min(340px,90vw);max-height:70vh;
+  background:#fff;border-radius:16px;box-shadow:0 20px 50px rgba(18,32,54,.25);z-index:91;
+  flex-direction:column;overflow:hidden;border:1px solid var(--line);
+}
+.assistant-panel.open{display:flex;}
+.assistant-head{background:var(--blue-deep);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}
+.assistant-body{padding:14px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:10px;}
+.a-msg{padding:10px 14px;border-radius:12px;font-size:.88rem;max-width:88%;line-height:1.6;}
+.a-msg.a-bot{background:var(--sky);align-self:flex-start;}
+.a-msg.a-user{background:var(--blue);color:#fff;align-self:flex-end;}
+.a-msg a{color:var(--turquoise);font-weight:700;cursor:pointer;text-decoration:underline;}
+.assistant-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);}
+.assistant-input-row input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--sky);font-family:'Tajawal',sans-serif;}
+
+footer{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:.85rem;border-top:1px solid var(--line);}
+@media(max-width:700px){.grid-2{grid-template-columns:1fr;}.stat-row{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="phase-note">✅ النسخة الكاملة — المنهج (18 درسًا) + مختبر افتراضي + اختبارات + شارات + بحث + مساعد الكيميائي، متصلة بقاعدة بياناتك</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo" id="logoHome"><span class="logo-mark">Cl</span> ChemLab</div>
+    <div class="nav-actions" id="navActions"></div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ===== AUTH ===== -->
+  <div class="view active" id="view-auth">
+    <div class="auth-bg-wrap">
+      <div class="auth-bg-icon" style="top:8%;right:10%;animation-delay:0s;">🧪</div>
+      <div class="auth-bg-icon" style="top:18%;left:8%;animation-delay:1.4s;">⚗️</div>
+      <div class="auth-bg-icon" style="bottom:14%;right:14%;animation-delay:2.6s;">🔬</div>
+      <div class="auth-bg-icon" style="bottom:22%;left:12%;animation-delay:3.6s;">💧</div>
+      <div class="auth-bg-icon" style="top:45%;right:4%;animation-delay:1.9s;">⚛️</div>
+      <div class="auth-orbit auth-orbit-1"><span class="auth-electron"></span></div>
+      <div class="auth-orbit auth-orbit-2"><span class="auth-electron"></span></div>
+      <div class="card" style="max-width:460px;margin:20px auto;position:relative;z-index:2;">
+      <div class="tabs-switch">
+        <button id="tabLogin" class="active">تسجيل الدخول</button>
+        <button id="tabRegister">حساب جديد</button>
+      </div>
+      <div class="msg" id="authMsg"></div>
+      <form id="loginForm">
+        <div class="field"><label>الاسم كما سجّلته</label><input type="text" id="loginName" required></div>
+        <div class="field"><label>رمز الدخول (PIN من 4 أرقام)</label><input type="password" inputmode="numeric" maxlength="4" id="loginPin" required></div>
+        <button class="btn btn-primary" style="width:100%" id="loginBtn">دخول</button>
+      </form>
+      <form id="registerForm" style="display:none">
+        <div class="field"><label>الاسم الكامل</label><input type="text" id="regName" required></div>
+        <div class="grid-2">
+          <div class="field"><label>الصف</label><input type="text" id="regGrade" value="أول ثانوي"></div>
+          <div class="field"><label>الشعبة</label><input type="text" id="regSection" placeholder="مثال: 1/أ" required></div>
+        </div>
+        <div class="field"><label>رقم الجلوس (اختياري)</label><input type="text" id="regSeat"></div>
+        <div class="field"><label>أنشئ رمز دخول (4 أرقام)</label><input type="password" inputmode="numeric" maxlength="4" id="regPin" required>
+          <div class="hint">احفظ هذا الرمز جيدًا — تحتاجه لتسجيل الدخول لاحقًا.</div></div>
+        <button class="btn btn-primary" style="width:100%" id="registerBtn">إنشاء الحساب والدخول</button>
+      </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STUDENT HOME ===== -->
+  <div class="view" id="view-student">
+    <h2 id="studentWelcome">أهلًا 👋</h2>
+    <div class="stat-row">
+      <div class="stat-box"><b id="statPoints">0</b><span>نقطة خبرة</span></div>
+      <div class="stat-box"><b id="statStreak">0</b><span>يوم متتالي 🔥</span></div>
+      <div class="stat-box"><b id="statDone">0/18</b><span>دروس مكتملة</span></div>
+      <div class="stat-box"><b id="statAvg">—</b><span>متوسط الاختبارات</span></div>
+    </div>
+
+    <h3 class="section-title" style="margin-top:0;">🏅 شاراتي</h3>
+    <div class="badges-row" id="badgesRow"></div>
+
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="🔍 ابحث عن درس، عنصر، أو مصطلح...">
+    </div>
+    <div id="curriculumBrowser"></div>
+  </div>
+
+  <!-- ===== LESSON DETAIL ===== -->
+  <div class="view" id="view-lesson">
+    <button class="back-btn" id="backToLessons">← رجوع للدروس</button>
+    <span class="lesson-code-tag" id="lessonCode"></span>
+    <h2 id="lessonTitle" style="margin-top:6px;"></h2>
+    <div class="video-frame"><iframe id="lessonVideo" src="" title="فيديو الدرس" allowfullscreen loading="lazy"></iframe></div>
+
+    <div class="lsec"><h4>✨ مقدمة</h4><div class="intro-box" id="lessonIntro"></div></div>
+    <div class="lsec"><h4>📖 الشرح التفصيلي</h4><p id="lessonExplanation"></p></div>
+    <div class="lsec" id="lessonTableWrap" style="display:none;"><h4>📊 جدول توضيحي</h4><div id="lessonTable"></div></div>
+    <div class="lsec"><h4>✅ مثال محلول</h4><div class="example-box" id="lessonExample"></div></div>
+    <div class="lsec"><h4>📝 ملخص الدرس</h4><ul class="simple-list" id="lessonSummary"></ul></div>
+    <div class="lsec"><h4>⚠️ أخطاء شائعة</h4><div class="mistake-box" id="lessonMistakes"></div></div>
+    <div class="lsec"><h4>💡 هل تعلم؟ / سؤال للتفكير</h4><div class="think-box" id="lessonThink"></div></div>
+
+    <div class="lsec"><h4>🧪 المختبر الافتراضي</h4><div class="lab-box" id="labArea"></div></div>
+
+    <div class="lsec" id="quizArea">
+      <h4>🎯 اختبار سريع</h4>
+      <button class="btn btn-turq" id="startQuizBtn">ابدأ الاختبار السريع</button>
+      <div id="quizContainer"></div>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER LOGIN ===== -->
+  <div class="view" id="view-teacher-login">
+    <div class="card" style="max-width:420px;margin:20px auto;">
+      <h3 style="margin-top:0;">دخول المعلم</h3>
+      <div class="msg" id="teacherMsg"></div>
+      <div class="field"><label>رمز المعلم (PIN)</label><input type="password" inputmode="numeric" id="teacherPin"></div>
+      <button class="btn btn-primary" style="width:100%" id="teacherLoginBtn">دخول لوحة المعلم</button>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER DASHBOARD ===== -->
+  <div class="view" id="view-teacher">
+    <h2>لوحة المعلم 👩‍🏫</h2>
+    <div class="stat-row" id="teacherStats"></div>
+    <div class="card" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>الاسم</th><th>الشعبة</th><th>النقاط</th><th>دروس مكتملة</th><th>اختبارات</th><th>المتوسط</th></tr></thead>
+        <tbody id="teacherTableBody"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);">جارٍ التحميل...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>ChemLab | مختبر الكيمياء — Phase 3: المنهج الكامل متصل بقاعدة البيانات</footer>
+
+
+<!-- ===== مساعد الكيميائي ===== -->
+<button class="assistant-fab" id="assistantFab" style="display:none;">🧪</button>
+<div class="assistant-panel" id="assistantPanel">
+  <div class="assistant-head">
+    <b>🧪 مساعد الكيميائي</b>
+    <button id="assistantClose" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">×</button>
+  </div>
+  <div class="assistant-body" id="assistantBody">
+    <div class="a-msg a-bot">أهلًا! أنا مساعد الكيميائي، أجاوبك من محتوى دروس كيمياء 1 فقط. اسألني عن أي مفهوم مثل: "ما الفرق بين المخلوط والمركب؟"</div>
+  </div>
+  <div class="assistant-input-row">
+    <input type="text" id="assistantInput" placeholder="اكتب سؤالك هنا...">
+    <button class="btn btn-turq btn-sm" id="assistantSend">إرسال</button>
+  </div>
+</div>
+
+<script>
+/* ================= Supabase REST config ================= */
+const SB_URL = "https://fftwtxinptqwjzivkdhw.supabase.co";
+const SB_KEY = "sb_publishable_ZgjI_jAwYm0XWcLJPi0qeg_falVLPtQ";
+
+async function rpc(fn, params){
+  const res = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`},
+    body: JSON.stringify(params)
+  });
+  const data = await res.json().catch(()=>null);
+  if(!res.ok){
+    const msg = (data && (data.message || data.hint || data.error)) || 'حدث خطأ غير متوقع';
+    throw new Error(msg);
+  }
+  return data;
+}
+
+/* ================= Curriculum data (18 lessons) ================= */
+const curriculum = [
+{chapter:"الفصل 1", title:"مقدمة في علم الكيمياء", lessons:[
+  {code:"1-1", title:"قصة مادتين", video:"N5jlb24CYmY",
+   intro:"تخيّل قطعتين: واحدة تلمع كالنجوم وتُقطّع بها الأشياء الصلبة، وأخرى طرية تُستخدم في أقلام الرصاص وتتفتت بسهولة. المفاجأة أن كلتيهما نفس العنصر تمامًا: الكربون! هذا الدرس يفتح باب فهمك لسرّ هذا الاختلاف.",
+   explanation:"الماس والجرافيت كلاهما يتكونان من ذرات كربون خالصة فقط، لكن الفرق الجوهري بينهما هو طريقة ترتيب هذه الذرات في الفراغ. في الماس، ترتبط كل ذرة كربون بأربع ذرات أخرى في بنية هرمية ثلاثية الأبعاد صلبة جدًا، بينما في الجرافيت ترتبط الذرات في طبقات سداسية مسطحة تنزلق فوق بعضها بسهولة. هذا يوضح أن خواص المادة لا تعتمد فقط على نوع الذرات المكوّنة لها، بل على طريقة ترتيبها أيضًا — وهذا هو جوهر ما تدرسه الكيمياء.",
+   table:{headers:["الخاصية","الماس","الجرافيت"],rows:[["الصلابة","أصلب مادة طبيعية معروفة","طري نسبيًا ويتفتت"],["التوصيل الكهربائي","عازل للكهرباء","موصل جيد للكهرباء"],["ترتيب الذرات","هرمي (رباعي السطوح)","طبقات سداسية منزلقة"]]},
+   example:"<b>مثال:</b> فسّر لماذا يُستخدم الجرافيت كمادة تشحيم في بعض الآلات رغم كونه نفس عنصر الماس.<br><span class='step'>الحل: بما أن طبقات الجرافيت تنزلق فوق بعضها بسهولة بسبب ضعف الروابط بين الطبقات (على عكس الروابط القوية داخل كل طبقة)، فهذا يجعله ملساء ومناسبًا لتقليل الاحتكاك بين الأسطح المعدنية.</span>",
+   summary:["الكيمياء تدرس تركيب المادة وخواصها وتحولاتها","نفس العنصر يمكن أن يكوّن مواد مختلفة تمامًا حسب ترتيب ذراته (تآصل)","خواص المادة نتيجة مباشرة لترتيب جسيماتها الداخلي"],
+   mistakes:"الاعتقاد الشائع الخاطئ أن تركيب المادة الكيميائي (نوع الذرات) وحده يحدد خواصها، متجاهلين تمامًا أثر طريقة ترتيب هذه الذرات في الفراغ.",
+   think:"لماذا يُستخدم الماس في المجوهرات وأدوات القطع الصناعية، بينما يُستخدم الجرافيت في أقلام الرصاص والتشحيم، رغم أن كليهما كربون خالص؟",
+   quiz:[
+     {type:"mcq", q:"الماس والجرافيت يتكونان أساسًا من عنصر:", opts:["الأكسجين","الكربون","السيليكون","الهيدروجين"], a:1},
+     {type:"tf", q:"خواص المادة تعتمد فقط على نوع الذرات المكوّنة لها ولا علاقة لترتيبها.", a:false},
+     {type:"mcq", q:"سبب صلابة الماس الشديدة هو:", opts:["وجود شوائب معدنية","ترتيب ذراته الهرمي القوي","لونه الشفاف","خفة وزنه"], a:1},
+   ]},
+  {code:"1-2", title:"الكيمياء والمادة", video:"6QcHilRR5jA",
+   intro:"من الهواء الذي تتنفسه إلى الطعام الذي تأكله، كل شيء حولك مادة. لكن ما تعريف الكيمياء بالضبط، وما علاقتها بكل هذا؟",
+   explanation:"الكيمياء هي العلم الذي يدرس تركيب المادة وخواصها والتغيرات التي تطرأ عليها والطاقة المصاحبة لهذه التغيرات. أما المادة فتُعرّف بأنها كل ما له كتلة ويشغل حيزًا من الفراغ. تنقسم الكيمياء إلى فروع رئيسية: الكيمياء العضوية (تدرس مركبات الكربون)، غير العضوية (بقية العناصر والمركبات)، الفيزيائية (تدرس الطاقة والتفاعلات)، والتحليلية (تحديد مكونات المواد).",
+   table:{headers:["فرع الكيمياء","مجال دراسته"],rows:[["العضوية","مركبات الكربون كالبلاستيك والأدوية"],["غير العضوية","المعادن والأملاح والعناصر"],["الفيزيائية","الطاقة المصاحبة للتفاعلات"],["التحليلية","تحديد مكونات المواد ونسبها"]]},
+   example:"<b>مثال:</b> صنّف دراسة تركيب الأدوية ضمن أي فرع من فروع الكيمياء.<br><span class='step'>الحل: يندرج ذلك تحت الكيمياء العضوية لأن معظم الأدوية مركبات كربونية، وقد تحتاج أيضًا لأدوات الكيمياء التحليلية لتحديد نسب مكوناتها بدقة.</span>",
+   summary:["المادة: كل ما له كتلة ويشغل حيزًا من الفراغ","الكيمياء تنقسم إلى فروع رئيسية حسب مجال الدراسة","فهم الكيمياء يبدأ بفهم تعريف المادة نفسها"],
+   mistakes:"الخلط بين مفهومي «الكتلة» و«الوزن» — الكتلة كمية ثابتة من المادة، بينما الوزن يتغير حسب الجاذبية.",
+   think:"هل الضوء أو الحرارة تُعتبر مادة حسب التعريف العلمي؟ لماذا؟",
+   quiz:[
+     {type:"mcq", q:"المادة تُعرّف بأنها كل ما له:", opts:["لون ورائحة","كتلة ويشغل حيزًا من الفراغ","درجة حرارة ثابتة","شكل محدد فقط"], a:1},
+     {type:"tf", q:"الكيمياء العضوية تدرس بشكل أساسي مركبات الكربون.", a:true},
+     {type:"mcq", q:"دراسة نسب مكونات عينة دم تندرج تحت:", opts:["الكيمياء التحليلية","الكيمياء الفيزيائية","الكيمياء العضوية فقط","لا شيء مما ذكر"], a:0},
+   ]},
+  {code:"1-3", title:"الطرائق العلمية", video:"6QcHilRR5jA",
+   intro:"كيف يتوصل العلماء لاكتشافاتهم؟ الجواب ليس صدفة، بل منهج منظم من الخطوات يسمى الطريقة العلمية.",
+   explanation:"تبدأ الطريقة العلمية بالملاحظة الدقيقة لظاهرة ما، ثم صياغة سؤال بحثي، فوضع فرضية (تفسير مقترح قابل للاختبار)، ثم إجراء تجربة مضبوطة لاختبار هذه الفرضية، وتحليل النتائج، وأخيرًا التوصل لاستنتاج. إذا تكررت النتائج وثبتت صحتها عبر تجارب متعددة، قد تتطور الفرضية إلى نظرية علمية، وإذا وُصفت علاقة ثابتة رياضيًا فقد تصبح قانونًا علميًا.",
+   table:null,
+   example:"<b>مثال:</b> لاحظ طالب أن النباتات القريبة من النافذة تنمو أسرع. صغ فرضية علمية قابلة للاختبار.<br><span class='step'>الحل: الفرضية: «زيادة كمية ضوء الشمس التي تصل للنبات تزيد من سرعة نموه». يمكن اختبارها بتجربة تقارن نمو نباتات متطابقة تحت كميات ضوء مختلفة مع تثبيت باقي العوامل (الماء، نوع التربة، الحرارة).</span>",
+   summary:["خطوات الطريقة العلمية: ملاحظة، سؤال، فرضية، تجربة، تحليل، استنتاج","الفرضية تفسير مقترح يجب أن يكون قابلًا للاختبار والدحض","النظرية تُبنى من فرضيات مُختبرة ومؤكدة عبر تجارب متعددة"],
+   mistakes:"الخلط بين «الفرضية» و«النظرية» — الفرضية تفسير أولي غير مؤكد، بينما النظرية مدعومة بأدلة تجريبية قوية ومتكررة.",
+   think:"لماذا يجب أن تكون الفرضية العلمية قابلة للاختبار والدحض حتى تُعتبر فرضية علمية صحيحة؟",
+   quiz:[
+     {type:"mcq", q:"أول خطوة في الطريقة العلمية عادة هي:", opts:["التجربة","الاستنتاج","الملاحظة","صياغة القانون"], a:2},
+     {type:"tf", q:"الفرضية العلمية يجب أن تكون غير قابلة للاختبار حتى تبقى صحيحة دائمًا.", a:false},
+     {type:"mcq", q:"متى تتحول الفرضية إلى نظرية علمية؟", opts:["فور اقتراحها","بعد دعمها بأدلة تجريبية متكررة","عندما يوافق عليها معظم الناس","لا تتحول أبدًا"], a:1},
+   ]},
+  {code:"1-4", title:"البحث العلمي", video:"6QcHilRR5jA",
+   intro:"ليس كل بحث علمي يعتمد على تجربة في المعمل — أحيانًا يكفي الرصد والملاحظة الدقيقة. تعرّف على نوعي البحث العلمي.",
+   explanation:"ينقسم البحث العلمي إلى نوعين رئيسيين: البحث الوصفي الذي يعتمد على الملاحظة والتصنيف وجمع المعلومات دون إجراء تجربة ضابطة (كدراسة سلوك حيوان في بيئته الطبيعية)، والبحث التجريبي الذي يختبر فرضية معينة عبر تجربة مضبوطة تحتوي على متغير مستقل (يتحكم فيه الباحث) ومتغير تابع (يُقاس) ومتغيرات ضابطة (تبقى ثابتة). الأمانة العلمية والدقة في القياس وتوثيق النتائج بصدق من أهم أساسيات أي بحث علمي موثوق.",
+   table:{headers:["نوع البحث","الوصف","مثال"],rows:[["وصفي","ملاحظة وتصنيف دون تجربة ضابطة","رصد هجرة الطيور موسميًا"],["تجريبي","تجربة مضبوطة تختبر فرضية","قياس أثر تركيز حمض على سرعة تفاعل"]]},
+   example:"<b>مثال:</b> في تجربة لقياس أثر درجة الحرارة على سرعة ذوبان السكر، حدد المتغير المستقل والمتغير التابع.<br><span class='step'>الحل: المتغير المستقل (الذي يتحكم فيه الباحث) هو درجة الحرارة، والمتغير التابع (الذي يُقاس كنتيجة) هو الزمن اللازم لذوبان السكر بالكامل.</span>",
+   summary:["البحث الوصفي: يعتمد على الملاحظة والتصنيف بدون تجربة ضابطة","البحث التجريبي: يختبر فرضية عبر تجربة بمتغيرات محددة","الأمانة العلمية أساس مصداقية أي نتيجة بحثية"],
+   mistakes:"الخلط بين المتغير المستقل (الذي نغيّره عمدًا) والمتغير التابع (الذي نقيسه كنتيجة للتغيير).",
+   think:"لماذا يجب تثبيت كل المتغيرات الضابطة في التجربة العلمية ما عدا المتغير المستقل؟",
+   quiz:[
+     {type:"mcq", q:"دراسة سلوك حيوانات في بيئتها الطبيعية دون تجربة تُعد بحثًا:", opts:["تجريبيًا","وصفيًا","كيميائيًا فقط","غير علمي"], a:1},
+     {type:"tf", q:"المتغير التابع هو الذي يتحكم فيه الباحث عمدًا في التجربة.", a:false},
+     {type:"mcq", q:"من أساسيات البحث العلمي الموثوق:", opts:["إخفاء النتائج غير المتوقعة","الأمانة العلمية في التوثيق","تكرار التجربة مرة واحدة فقط","تجاهل المتغيرات الضابطة"], a:1},
+   ]},
+]},
+{chapter:"الفصل 2", title:"المادة – الخواص والتغيرات", lessons:[
+  {code:"2-1", title:"خواص المادة", video:"mQ3PQWSbKJ4",
+   intro:"كيف تميّز الملح عن السكر دون تذوقهما؟ من خلال خواصهما الفيزيائية والكيميائية المختلفة.",
+   explanation:"تنقسم خواص المادة إلى نوعين: الخواص الفيزيائية التي يمكن ملاحظتها أو قياسها دون تغيير هوية المادة الكيميائية، مثل اللون والكثافة ونقطة الانصهار والغليان والقابلية للذوبان؛ والخواص الكيميائية التي تصف كيفية تفاعل المادة لتكوين مادة جديدة، مثل القابلية للاحتراق أو التآكل أو التفاعل مع الأحماض.",
+   table:{headers:["النوع","أمثلة"],rows:[["خواص فيزيائية","اللون، الكثافة، نقطة الانصهار، الحالة الفيزيائية"],["خواص كيميائية","القابلية للاحتراق، التفاعل مع الأكسجين (الصدأ)"]]},
+   example:"<b>مثال:</b> صنّف الخواص التالية للحديد: (اللون الرمادي اللامع) و(القابلية للصدأ عند التعرض للرطوبة).<br><span class='step'>الحل: اللون الرمادي اللامع خاصية فيزيائية (تُلاحظ دون تغيير المادة)، بينما القابلية للصدأ خاصية كيميائية لأنها تصف تفاعل الحديد مع الأكسجين والماء لتكوين مادة جديدة (أكسيد الحديد).</span>",
+   summary:["الخواص الفيزيائية تُقاس دون تغيير التركيب الكيميائي للمادة","الخواص الكيميائية تظهر فقط أثناء حدوث تفاعل كيميائي","تساعد الخواص في التعرف على المواد وتمييزها عن بعضها"],
+   mistakes:"الاعتقاد أن اللون دائمًا خاصية فيزيائية فقط — في بعض الحالات يكون تغير اللون مؤشرًا على حدوث تفاعل كيميائي.",
+   think:"هل «القابلية للذوبان في الماء» خاصية فيزيائية أم كيميائية؟ ولماذا؟",
+   quiz:[
+     {type:"mcq", q:"نقطة الغليان تُعتبر من:", opts:["الخواص الكيميائية","الخواص الفيزيائية","لا تصنف كخاصية","خاصية نووية"], a:1},
+     {type:"tf", q:"القابلية للاحتراق تُعد خاصية كيميائية لأنها تنتج مادة جديدة.", a:true},
+     {type:"mcq", q:"أي مما يلي مثال على خاصية كيميائية؟", opts:["الكثافة","اللون","القابلية للصدأ","الحالة الفيزيائية"], a:2},
+   ]},
+  {code:"2-2", title:"تغيرات المادة", video:"mQ3PQWSbKJ4",
+   intro:"عندما يذوب الثلج لا تحصل على مادة جديدة، لكن عندما يحترق الخشب تحصل على رماد ودخان مختلفين تمامًا. ما الفرق؟",
+   explanation:"التغير الفيزيائي هو تغير لا يُغيّر التركيب الكيميائي للمادة، مثل الانصهار والتبخر والتجمد وتقطيع الورق — يمكن غالبًا الرجوع فيه. أما التغير الكيميائي فينتج عنه مادة أو مواد جديدة تمامًا لها خواص مختلفة عن المواد الأصلية، مثل الاحتراق والصدأ والطهي، وغالبًا لا يمكن الرجوع فيه بسهولة.",
+   table:{headers:["النوع","مثال","قابل للعكس؟"],rows:[["فيزيائي","تجمد الماء إلى ثلج","نعم غالبًا"],["كيميائي","احتراق الورق","لا، صعب جدًا"]]},
+   example:"<b>مثال:</b> صنّف التغيرات التالية: (تقطيع قطعة خشب) و(احتراق قطعة الخشب نفسها).<br><span class='step'>الحل: تقطيع الخشب تغير فيزيائي لأن التركيب الكيميائي للخشب لم يتغير، فقط تغير شكله. أما احتراقه فتغير كيميائي لأنه ينتج مواد جديدة كليًا (رماد، ثاني أكسيد الكربون، بخار ماء) لها خواص مختلفة تمامًا عن الخشب الأصلي.</span>",
+   summary:["التغير الفيزيائي: لا يغيّر التركيب الكيميائي، وغالبًا قابل للعكس","التغير الكيميائي: ينتج مادة جديدة بخواص مختلفة كليًا","مؤشرات التغير الكيميائي: تغير اللون، انطلاق غاز، تكوّن راسب، تغير الحرارة"],
+   mistakes:"الاعتقاد أن كل تغير في الشكل أو الحالة هو تغير كيميائي — تغير الحالة (كالانصهار) هو تغير فيزيائي فقط.",
+   think:"عند إذابة السكر في الماء، هل هذا تغير فيزيائي أم كيميائي؟ برر إجابتك.",
+   quiz:[
+     {type:"mcq", q:"ذوبان الثلج يُعد تغيرًا:", opts:["كيميائيًا لا رجعة فيه","فيزيائيًا قابلًا للعكس","نوويًا","لا يوجد تغير"], a:1},
+     {type:"tf", q:"التغير الكيميائي ينتج دائمًا مادة جديدة لها خواص مختلفة عن المواد الأصلية.", a:true},
+     {type:"mcq", q:"أي مما يلي مؤشر على حدوث تغير كيميائي؟", opts:["تغير الشكل فقط","انطلاق غاز وتكوّن راسب","تغير درجة الحرارة المحيطة فقط بدون سبب","لا شيء مما ذكر"], a:1},
+   ]},
+  {code:"2-3", title:"المخاليط", video:"mQ3PQWSbKJ4",
+   intro:"الهواء الذي تتنفسه، وماء البحر، وحتى عصير البرتقال — كلها مخاليط. لكن ما الذي يجعلها مخاليط وليست مركبات؟",
+   explanation:"المخلوط هو اتحاد فيزيائي (وليس كيميائيًا) بين مادتين أو أكثر تحتفظ كل منهما بخواصها الأصلية، ويمكن فصل مكوناته بطرق فيزيائية. ينقسم المخلوط إلى نوعين: المخلوط المتجانس الذي تتوزع فيه المكونات بانتظام تام بحيث لا يمكن تمييزها بالعين المجردة (كالهواء ومحلول الملح)، والمخلوط غير المتجانس الذي يمكن تمييز مكوناته بالعين المجردة (كخليط الرمل والحصى). تشمل طرق الفصل الفيزيائية: الترشيح، والتقطير، والتبخير، والفصل المغناطيسي.",
+   table:{headers:["طريقة الفصل","تُستخدم لفصل"],rows:[["الترشيح","مادة صلبة عن سائل"],["التقطير","سائلين مختلفين في درجة الغليان"],["الفصل المغناطيسي","مادة مغناطيسية عن مخلوط"]]},
+   example:"<b>مثال:</b> اقترح طريقة فصل مناسبة لخليط من ماء وملح مذاب.<br><span class='step'>الحل: نستخدم التبخير أو التقطير: يُسخّن المحلول حتى يتبخر الماء تاركًا الملح الصلب، وإذا أردنا استعادة الماء أيضًا نستخدم التقطير لتكثيف البخار الناتج.</span>",
+   summary:["المخلوط: اتحاد فيزيائي بين مادتين أو أكثر تحتفظ كل منهما بخواصها","المخلوط المتجانس: مكوناته موزعة بانتظام تام (كالهواء)","المخلوط غير المتجانس: يمكن تمييز مكوناته بالعين المجردة"],
+   mistakes:"الخلط بين المخلوط المتجانس والمركب — المخلوط المتجانس ما زال يحتفظ بخواص مكوناته ويمكن فصله فيزيائيًا، بعكس المركب.",
+   think:"هل ماء البحر مخلوط متجانس أم غير متجانس؟ وكيف يمكن فصل الملح منه؟",
+   quiz:[
+     {type:"mcq", q:"الهواء الجوي يُعتبر مثالًا على:", opts:["مركب نقي","عنصر نقي","مخلوط متجانس","مخلوط غير متجانس"], a:2},
+     {type:"tf", q:"يمكن فصل مكونات المخلوط بطرق كيميائية فقط.", a:false},
+     {type:"mcq", q:"لفصل مادة صلبة عالقة في سائل، أفضل طريقة هي:", opts:["التقطير","الترشيح","الفصل المغناطيسي","التبخير"], a:1},
+   ]},
+  {code:"2-4", title:"العناصر والمركبات", video:"mQ3PQWSbKJ4",
+   intro:"الماء H₂O مركّب يتكون من عنصرين، لكن لا يمكنك أبدًا تحليل الذهب Au إلى شيء أبسط منه كيميائيًا. لماذا؟",
+   explanation:"العنصر مادة نقية لا يمكن تحليلها إلى أبسط منها بالوسائل الكيميائية العادية، ويُمثَّل برمز في الجدول الدوري (مثل O للأكسجين وFe للحديد). أما المركّب فهو مادة نقية تتكون من عنصرين أو أكثر متحدين كيميائيًا بنسب وزنية ثابتة ومحددة، ويمكن تحليله كيميائيًا إلى العناصر المكوّنة له (مثل الماء H₂O الذي يتحلل إلى هيدروجين وأكسجين).",
+   table:{headers:["المقارنة","العنصر","المركّب"],rows:[["التركيب","نوع ذرات واحد","نوعان أو أكثر من الذرات متحدة كيميائيًا"],["إمكانية التحليل","لا يمكن تحليله كيميائيًا","يمكن تحليله كيميائيًا إلى عناصره"],["مثال","الأكسجين O₂","الماء H₂O"]]},
+   example:"<b>مثال:</b> صنّف كلًا من: الحديد (Fe)، وثاني أكسيد الكربون (CO₂) إلى عنصر أو مركّب.<br><span class='step'>الحل: الحديد Fe عنصر لأنه يتكون من نوع واحد فقط من الذرات ولا يمكن تحليله كيميائيًا. أما CO₂ فمركّب لأنه يتكون من عنصرين مختلفين (كربون وأكسجين) متحدين كيميائيًا بنسبة ثابتة، ويمكن تحليله إليهما.</span>",
+   summary:["العنصر: أبسط صورة للمادة، يُمثَّل برمز في الجدول الدوري","المركّب: يتكون من عنصرين أو أكثر متحدين كيميائيًا بنسب ثابتة","يمكن تحليل المركّب كيميائيًا لكن لا يمكن تحليل العنصر"],
+   mistakes:"الخلط بين المخلوط والمركّب — في المركّب تتحد العناصر كيميائيًا بنسب ثابتة وتفقد خواصها الأصلية، بعكس المخلوط.",
+   think:"إذا كانت النسبة بين الهيدروجين والأكسجين في الماء ثابتة دائمًا (H₂O)، فماذا يحدث لو تغيرت هذه النسبة؟ هل يبقى ماءً؟",
+   quiz:[
+     {type:"mcq", q:"الماء H₂O يُصنَّف على أنه:", opts:["عنصر", "مركّب", "مخلوط غير متجانس", "خليط عناصر فقط"], a:1},
+     {type:"tf", q:"يمكن تحليل العنصر كيميائيًا إلى مواد أبسط منه.", a:false},
+     {type:"mcq", q:"العناصر تُمثَّل في:", opts:["معادلات الفيزياء فقط","الجدول الدوري برموز خاصة","الجداول الإحصائية","لا تُمثَّل برموز"], a:1},
+   ]},
+]},
+{chapter:"الفصل 3", title:"تركيب الذرة", lessons:[
+  {code:"3-1", title:"الأفكار القديمة للمادة", video:"Cs8b_YERQ_4",
+   intro:"قبل آلاف السنين، تساءل فيلسوف إغريقي: إذا قسّمت قطعة من الذهب إلى أجزاء أصغر فأصغر، هل ستصل يومًا لجزء لا يمكن تقسيمه أكثر؟",
+   explanation:"كان الفيلسوف اليوناني ديمقريطس أول من افترض أن المادة تتكون من جسيمات صغيرة جدًا غير قابلة للانقسام أسماها «أتوموس» (ومنها جاءت كلمة Atom)، لكن هذه كانت فكرة فلسفية دون دليل تجريبي. بعد أكثر من ألفي عام، وضع العالم جون دالتون في أوائل القرن التاسع عشر أول نظرية ذرية علمية مبنية على أدلة وتجارب حقيقية، والتي نصت على أن كل مادة تتكون من ذرات، وأن ذرات العنصر الواحد متماثلة، وأن الذرات تتحد بنسب عددية بسيطة لتكوين المركبات.",
+   table:null,
+   example:"<b>مثال:</b> ما الفرق الجوهري بين فكرة ديمقريطس ونظرية دالتون عن الذرة؟<br><span class='step'>الحل: فكرة ديمقريطس كانت تخمينًا فلسفيًا بحتًا دون أي دليل تجريبي يدعمها، بينما نظرية دالتون كانت نظرية علمية مبنية على ملاحظات وتجارب كيميائية فعلية، مثل قانون حفظ الكتلة وقانون النسب الثابتة.</span>",
+   summary:["ديمقريطس: أول من افترض وجود الذرة فلسفيًا دون دليل تجريبي","دالتون: أول من وضع نظرية علمية للذرة مبنية على تجارب حقيقية","نظرية دالتون مهّدت الطريق لكل الاكتشافات الذرية اللاحقة"],
+   mistakes:"الاعتقاد أن نظرية دالتون كانت الوصف النهائي والكامل للذرة — لاحقًا تم اكتشاف أن الذرة قابلة للانقسام إلى جسيمات أدق (إلكترونات، بروتونات، نيوترونات).",
+   think:"لماذا تُعتبر نظرية دالتون نقطة تحول علمية رغم أن بعض تفاصيلها ثبت لاحقًا أنها غير دقيقة بالكامل؟",
+   quiz:[
+     {type:"mcq", q:"كلمة Atom مشتقة من كلمة يونانية تعني:", opts:["نار", "غير قابل للانقسام", "ماء", "ضوء"], a:1},
+     {type:"tf", q:"نظرية دالتون كانت أول نظرية ذرية علمية مبنية على تجارب حقيقية.", a:true},
+     {type:"mcq", q:"من أول من افترض فكرة الذرة فلسفيًا؟", opts:["دالتون", "رذرفورد", "ديمقريطس", "طومسون"], a:2},
+   ]},
+  {code:"3-2", title:"تعريف الذرة", video:"Cs8b_YERQ_4",
+   intro:"كيف اكتشف العلماء أن الذرة نفسها تحتوي على أجزاء أصغر، رغم أنها أصغر من أن تُرى بأي مجهر عادي؟",
+   explanation:"الذرة تتكون من نواة مركزية صغيرة جدًا وكثيفة موجبة الشحنة تحتوي على البروتونات (موجبة الشحنة) والنيوترونات (متعادلة)، وتدور حولها الإلكترونات سالبة الشحنة في مستويات طاقة. اكتشف طومسون الإلكترون عبر تجربة أنبوب أشعة المهبط، ثم أثبت رذرفورد لاحقًا عبر تجربته الشهيرة (قذف صفيحة ذهب رقيقة بجسيمات ألفا) وجود نواة صغيرة وكثيفة وموجبة الشحنة في مركز الذرة، وأن معظم حجم الذرة عبارة عن فراغ.",
+   table:{headers:["الجسيم","الشحنة","الموقع"],rows:[["بروتون","موجبة (+1)","داخل النواة"],["نيوترون","متعادلة (0)","داخل النواة"],["إلكترون","سالبة (-1)","يدور حول النواة"]]},
+   example:"<b>مثال:</b> في تجربة رذرفورد، انحرفت معظم جسيمات ألفا وكأن الصفيحة الذهبية شبه فارغة، لكن جسيمات قليلة جدًا ارتدت للخلف. فسّر ذلك.<br><span class='step'>الحل: مرور معظم الجسيمات دون انحراف يدل على أن معظم حجم الذرة فراغ، بينما ارتداد جسيمات قليلة للخلف يدل على وجود نواة صغيرة جدًا لكنها كثيفة وموجبة الشحنة تصدّ الجسيمات الموجبة القادمة نحوها مباشرة.</span>",
+   summary:["الذرة تتكون من نواة (بروتونات ونيوترونات) وإلكترونات تدور حولها","طومسون اكتشف الإلكترون","رذرفورد أثبت وجود نواة صغيرة كثيفة موجبة الشحنة"],
+   mistakes:"الاعتقاد أن الذرة كتلة صلبة مصمتة — في الحقيقة معظم حجم الذرة فراغ، والكتلة تتركز في نواة صغيرة جدًا نسبيًا.",
+   think:"لماذا اختار رذرفورد صفيحة ذهب رقيقة جدًا لتجربته تحديدًا؟",
+   quiz:[
+     {type:"mcq", q:"الجسيم موجب الشحنة داخل النواة هو:", opts:["الإلكترون", "النيوترون", "البروتون", "الفوتون"], a:2},
+     {type:"tf", q:"معظم حجم الذرة عبارة عن فراغ حسب تجربة رذرفورد.", a:true},
+     {type:"mcq", q:"من الذي اكتشف الإلكترون؟", opts:["دالتون", "طومسون", "ديمقريطس", "بور"], a:1},
+   ]},
+  {code:"3-3", title:"كيف تختلف الذرات؟", video:"Cs8b_YERQ_4",
+   intro:"كل ذرات الهيدروجين متشابهة في عدد البروتونات، لكن بعضها أثقل قليلًا من بعض! كيف يكون هذا ممكنًا؟",
+   explanation:"العدد الذري (Z) يمثل عدد البروتونات في نواة الذرة، وهو ما يحدد هوية العنصر بالضبط (كل ذرات نفس العنصر لها نفس العدد الذري). أما العدد الكتلي (A) فهو مجموع عدد البروتونات وعدد النيوترونات في النواة. النظائر هي ذرات العنصر نفسه (تتفق في عدد البروتونات والعدد الذري) لكنها تختلف في عدد النيوترونات وبالتالي في العدد الكتلي.",
+   table:{headers:["المفهوم","التعريف"],rows:[["العدد الذري (Z)","عدد البروتونات، يحدد هوية العنصر"],["العدد الكتلي (A)","عدد البروتونات + عدد النيوترونات"],["النظائر","ذرات نفس العنصر تختلف في عدد النيوترونات"]]},
+   example:"<b>مثال:</b> لعنصر الكربون نظيران: كربون-12 وكربون-14. إذا كان العدد الذري للكربون 6، احسب عدد النيوترونات في كل نظير.<br><span class='step'>الحل: كربون-12: عدد النيوترونات = العدد الكتلي − العدد الذري = 12 − 6 = 6 نيوترونات.<br>كربون-14: عدد النيوترونات = 14 − 6 = 8 نيوترونات.<br>كلا النظيرين له نفس عدد البروتونات (6) وبالتالي نفس هوية العنصر، لكنهما يختلفان في عدد النيوترونات.</span>",
+   summary:["العدد الذري = عدد البروتونات (يحدد هوية العنصر)","العدد الكتلي = عدد البروتونات + عدد النيوترونات","النظائر: نفس العدد الذري، عدد كتلي مختلف"],
+   mistakes:"الخلط بين العدد الذري والعدد الكتلي — العدد الذري ثابت لكل عنصر، بينما العدد الكتلي يختلف بين نظائر العنصر نفسه.",
+   think:"إذا كانت النظائر تختلف في الكتلة، فهل تتوقع أن تختلف أيضًا في خواصها الكيميائية؟ ولماذا؟",
+   quiz:[
+     {type:"mcq", q:"العدد الذري يمثل عدد:", opts:["النيوترونات فقط","البروتونات","الإلكترونات والنيوترونات معًا","البروتونات والنيوترونات معًا"], a:1},
+     {type:"tf", q:"النظائر لنفس العنصر تختلف في عدد البروتونات.", a:false},
+     {type:"mcq", q:"إذا كان العدد الكتلي لنظير الصوديوم 23 وعدده الذري 11، فعدد نيوتروناته:", opts:["11","12","23","34"], a:1},
+   ]},
+  {code:"3-4", title:"الأنوية غير المستقرة والتحلل الإشعاعي", video:"Cs8b_YERQ_4",
+   intro:"بعض العناصر «تتحلل» ذاتيًا مطلقة إشعاعات! لماذا تكون بعض الأنوية غير مستقرة بينما تبقى أخرى ثابتة إلى الأبد؟",
+   explanation:"بعض أنوية الذرات تكون غير مستقرة بسبب اختلال التوازن بين عدد البروتونات والنيوترونات فيها، فتصدر إشعاعات للتخلص من الطاقة الزائدة والوصول إلى حالة أكثر استقرارًا، وتُعرف هذه الظاهرة بالنشاط الإشعاعي. هناك ثلاثة أنواع رئيسية من الإشعاع: إشعاع ألفا (α) وهو عبارة عن نواة هيليوم، ضعيف الاختراق ويمكن إيقافه بورقة؛ إشعاع بيتا (β) وهو إلكترون سريع، متوسط الاختراق؛ وإشعاع جاما (γ) وهو موجة كهرومغناطيسية عالية الطاقة شديدة الاختراق تحتاج لحاجز رصاص أو خرسانة سميكة لإيقافها.",
+   table:{headers:["نوع الإشعاع","الطبيعة","قوة الاختراق"],rows:[["ألفا (α)","نواة هيليوم","ضعيفة (تُوقفها ورقة)"],["بيتا (β)","إلكترون سريع","متوسطة (يوقفها الألمنيوم)"],["جاما (γ)","موجة كهرومغناطيسية","شديدة (يحتاج رصاص/خرسانة)"]]},
+   example:"<b>مثال:</b> عامل مختبر يتعامل مع مصدر يصدر إشعاع جاما. ما نوع الحماية المناسبة؟<br><span class='step'>الحل: بما أن إشعاع جاما شديد الاختراق، يحتاج العامل لحاجز سميك من الرصاص أو الخرسانة لتقليل تعرضه للإشعاع، على عكس إشعاع ألفا الذي يكفي لإيقافه حتى ورقة عادية.</span>",
+   summary:["النشاط الإشعاعي: انبعاث إشعاع من نواة غير مستقرة للوصول لحالة استقرار","إشعاع ألفا: ضعيف الاختراق (نواة هيليوم)","إشعاع جاما: شديد الاختراق (موجة كهرومغناطيسية عالية الطاقة)"],
+   mistakes:"الاعتقاد أن كل أنواع الإشعاع لها نفس درجة الخطورة وقوة الاختراق — فعليًا تختلف اختلافًا كبيرًا بين ألفا وبيتا وجاما.",
+   think:"لماذا يُعتبر إشعاع ألفا أقل خطورة عند التعرض الخارجي لكنه أخطر بكثير إذا استُنشق أو ابتُلع؟",
+   quiz:[
+     {type:"mcq", q:"أي أنواع الإشعاع التالية هو الأشد اختراقًا؟", opts:["ألفا","بيتا","جاما","لا فرق بينها"], a:2},
+     {type:"tf", q:"إشعاع ألفا عبارة عن نواة ذرة هيليوم.", a:true},
+     {type:"mcq", q:"سبب حدوث النشاط الإشعاعي هو:", opts:["زيادة عدد الإلكترونات فقط","عدم استقرار النواة نتيجة اختلال البروتونات والنيوترونات","ارتفاع درجة الحرارة المحيطة فقط","لا يوجد سبب معروف"], a:1},
+   ]},
+]},
+{chapter:"الفصل 4", title:"التفاعلات الكيميائية", lessons:[
+  {code:"4-1", title:"التفاعلات والمعادلات", video:"RB3wT7u2DWQ",
+   intro:"كيف تعرف أن تفاعلًا كيميائيًا قد حدث فعلًا وليس مجرد تغير شكلي بسيط؟",
+   explanation:"تتضمن مؤشرات حدوث التفاعل الكيميائي: تغير اللون، انطلاق غاز (فقاعات)، تكوّن راسب صلب، تغير درجة الحرارة (امتصاص أو إطلاق حرارة)، أو انبعاث ضوء. تُمثَّل التفاعلات الكيميائية بمعادلات كيميائية موزونة، بحيث يكون عدد ذرات كل عنصر في جانب المتفاعلات مساويًا لعددها في جانب النواتج، تحقيقًا لقانون حفظ الكتلة الذي ينص على أن المادة لا تُستحدث ولا تفنى في التفاعل الكيميائي العادي.",
+   table:null,
+   example:"<b>مثال:</b> وازن المعادلة التالية: H₂ + O₂ → H₂O<br><span class='step'>الحل: نلاحظ أن جانب النواتج فيه ذرة أكسجين واحدة فقط بينما المتفاعلات فيها ذرتان، فنضع معامل 2 أمام H₂O: H₂ + O₂ → 2H₂O. الآن عدد ذرات الهيدروجين بالنواتج = 4 بينما بالمتفاعلات = 2، فنضع معامل 2 أمام H₂: 2H₂ + O₂ → 2H₂O. الآن العدد متساوٍ في الطرفين (4 هيدروجين، 2 أكسجين).</span>",
+   summary:["مؤشرات التفاعل: تغير اللون، انطلاق غاز، تكوّن راسب، تغير الحرارة","المعادلة الموزونة: عدد ذرات كل عنصر متساوٍ في الطرفين","قانون حفظ الكتلة: المادة لا تُستحدث ولا تفنى في التفاعل الكيميائي"],
+   mistakes:"محاولة موازنة المعادلة بتغيير الرقم السفلي (الدليل) في الصيغة الكيميائية بدلًا من إضافة معامل أمام الصيغة كاملة — وهذا يغيّر هوية المادة نفسها.",
+   think:"لماذا لا يجوز تغيير الأرقام السفلية داخل الصيغة الكيميائية عند موازنة معادلة كيميائية؟",
+   quiz:[
+     {type:"mcq", q:"أي مما يلي ليس مؤشرًا مباشرًا على حدوث تفاعل كيميائي؟", opts:["تغير اللون","انطلاق غاز","تغير شكل القطعة فقط دون أي تغير آخر","تكوّن راسب"], a:2},
+     {type:"tf", q:"قانون حفظ الكتلة ينص على أن المادة تفنى جزئيًا أثناء التفاعل الكيميائي.", a:false},
+     {type:"mcq", q:"لموازنة معادلة كيميائية نغيّر:", opts:["الأرقام السفلية (الدليل) في الصيغة","المعاملات أمام الصيغ الكيميائية","رموز العناصر نفسها","لا نغيّر أي شيء"], a:1},
+   ]},
+  {code:"4-2", title:"تصنيف التفاعلات الكيميائية", video:"gXpg10j8GLc",
+   intro:"رغم وجود ملايين التفاعلات الكيميائية المختلفة، يمكن تصنيف معظمها ضمن أربعة أنماط أساسية فقط!",
+   explanation:"تُصنَّف التفاعلات الكيميائية إلى أربعة أنواع رئيسية: تفاعل الاتحاد (التكوين) حيث تتحد مادتان أو أكثر لتكوين مادة واحدة (A + B → AB)؛ تفاعل التفكك حيث تتفكك مادة واحدة إلى مادتين أو أكثر (AB → A + B)؛ تفاعل الإحلال الأحادي (البسيط) حيث يحل عنصر محل عنصر آخر في مركّب (A + BC → AC + B)؛ وتفاعل الإحلال الثنائي (المزدوج) حيث يتبادل مركبان أيوناتهما (AB + CD → AD + CB).",
+   table:{headers:["نوع التفاعل","الصيغة العامة","مثال"],rows:[["اتحاد","A + B → AB","2H₂ + O₂ → 2H₂O"],["تفكك","AB → A + B","2H₂O₂ → 2H₂O + O₂"],["إحلال أحادي","A + BC → AC + B","Zn + 2HCl → ZnCl₂ + H₂"],["إحلال ثنائي","AB + CD → AD + CB","AgNO₃ + NaCl → AgCl + NaNO₃"]]},
+   example:"<b>مثال:</b> صنّف التفاعل التالي: Zn + 2HCl → ZnCl₂ + H₂<br><span class='step'>الحل: الزنك (عنصر منفرد) حلّ محل الهيدروجين في مركّب حمض الهيدروكلوريك مكوّنًا مركّبًا جديدًا وغازًا منفردًا، وهذا هو النمط المميز لتفاعل الإحلال الأحادي (البسيط).</span>",
+   summary:["تفاعل الاتحاد: مادتان تتحدان لتكوين مادة واحدة","تفاعل التفكك: مادة واحدة تتفكك إلى مادتين أو أكثر","تفاعلا الإحلال الأحادي والثنائي: تبادل عناصر أو أيونات بين مركبات"],
+   mistakes:"الخلط بين تفاعل الإحلال الأحادي (عنصر واحد يحل محل عنصر في مركّب) وتفاعل الإحلال الثنائي (مركبان يتبادلان الأيونات).",
+   think:"كيف تميّز بسرعة بين تفاعل الإحلال الأحادي وتفاعل الإحلال الثنائي بمجرد النظر لعدد المواد المتفاعلة وأنواعها؟",
+   quiz:[
+     {type:"mcq", q:"تفاعل AB + CD → AD + CB يُسمى:", opts:["اتحاد","تفكك","إحلال أحادي","إحلال ثنائي"], a:3},
+     {type:"tf", q:"في تفاعل التفكك، تتحد مادتان لتكوين مادة واحدة.", a:false},
+     {type:"mcq", q:"تفاعل Zn + 2HCl → ZnCl₂ + H₂ يُصنَّف كـ:", opts:["اتحاد","تفكك","إحلال أحادي","إحلال ثنائي"], a:2},
+   ]},
+  {code:"4-3", title:"التفاعلات في المحاليل المائية", video:"hZp3tFyEUvM",
+   intro:"عندما تُسكب محلولان شفافان معًا فيتكون فجأة راسب أبيض غائم — ماذا حدث كيميائيًا بالضبط؟",
+   explanation:"تحدث تفاعلات الإحلال الثنائي غالبًا بين محاليل مائية، وقد ينتج عنها راسب صلب غير ذائب، أو ماء، أو غاز. لفهم التفاعل الفعلي بدقة، تُكتب أحيانًا معادلة أيونية صافية تُظهر فقط الأيونات التي تشارك فعليًا في تكوين الناتج، بعد حذف «الأيونات المتفرجة» التي تبقى دون تغيير في المحلول ولا تشارك في التفاعل الفعلي.",
+   table:null,
+   example:"<b>مثال:</b> عند خلط محلول نترات الفضة AgNO₃ مع محلول كلوريد الصوديوم NaCl، يتكون راسب أبيض من كلوريد الفضة AgCl. اكتب المعادلة الأيونية الصافية.<br><span class='step'>الحل: المعادلة الكاملة: AgNO₃ + NaCl → AgCl↓ + NaNO₃.<br>الأيونات المتفرجة هي Na⁺ و NO₃⁻ (تبقى في المحلول دون تغيير).<br>المعادلة الأيونية الصافية: Ag⁺ + Cl⁻ → AgCl↓ (فقط الأيونات المشاركة فعليًا في تكوين الراسب).</span>",
+   summary:["تفاعل الترسيب: ينتج مركب صلب غير ذائب (راسب) من خلط محلولين","الأيونات المتفرجة: تبقى دون تغيير ولا تُكتب في المعادلة الأيونية الصافية","المعادلة الأيونية الصافية تُظهر فقط الأيونات المشاركة فعليًا في التفاعل"],
+   mistakes:"نسيان حذف الأيونات المتفرجة عند كتابة المعادلة الأيونية الصافية، مما يجعلها غير دقيقة أو غير مختصرة بالشكل الصحيح.",
+   think:"كيف تحدد أي الأيونات هي «المتفرجة» في تفاعل إحلال ثنائي معين؟",
+   quiz:[
+     {type:"mcq", q:"الأيونات المتفرجة هي الأيونات التي:", opts:["تشارك في تكوين الراسب","تبقى دون تغيير ولا تشارك فعليًا في التفاعل","تتبخر أثناء التفاعل","تتحول إلى غاز دائمًا"], a:1},
+     {type:"tf", q:"كل تفاعل إحلال ثنائي في محلول مائي ينتج راسبًا بالضرورة.", a:false},
+     {type:"mcq", q:"المعادلة الأيونية الصافية لتفاعل AgNO₃ + NaCl تكون:", opts:["AgNO₃ + NaCl → AgCl + NaNO₃","Ag⁺ + Cl⁻ → AgCl","Na⁺ + NO₃⁻ → NaNO₃","Ag⁺ + Na⁺ → لا تفاعل"], a:1},
+   ]},
+]},
+{chapter:"الفصل 5", title:"المول", lessons:[
+  {code:"5-1", title:"قياس المادة", video:"2wIS4dwJDNU",
+   intro:"كيف تحسب عدد الذرات في حفنة من الملح، رغم أنها عدد فلكي هائل لا يمكن عدّه يدويًا؟",
+   explanation:"المول وحدة قياس كمية المادة في النظام الدولي، تمامًا كما تُستخدم «الدرزن» لقياس 12 قطعة. يحتوي مول واحد من أي مادة على عدد ثابت من الجسيمات يُسمى عدد أفوجادرو، ويساوي تقريبًا 6.022×10²³ جسيم (سواء كانت ذرات أو جزيئات أو أيونات). هذا العدد الهائل يسمح للكيميائيين بالتعامل مع كميات يمكن قياسها عمليًا في المختبر (بالجرامات) بدلًا من عدّ ذرات فردية.",
+   table:null,
+   example:"<b>مثال:</b> كم عدد ذرات الكربون الموجودة في 2 مول من الكربون؟<br><span class='step'>الحل: عدد الذرات = عدد المولات × عدد أفوجادرو = 2 × 6.022×10²³ = 1.2044×10²⁴ ذرة كربون.</span>",
+   summary:["المول: وحدة لقياس كمية المادة، تمامًا كالدرزن لقياس العدد","عدد أفوجادرو ≈ 6.022×10²³ جسيم/مول","يمكن حساب عدد الجسيمات = عدد المولات × عدد أفوجادرو"],
+   mistakes:"الخلط بين «عدد المولات» و«عدد الجسيمات» مباشرة دون ضرب العدد بثابت أفوجادرو.",
+   think:"لماذا يحتاج الكيميائيون لوحدة مثل المول بدلًا من التعامل مع عدد الذرات مباشرة؟",
+   quiz:[
+     {type:"mcq", q:"عدد أفوجادرو يساوي تقريبًا:", opts:["6.022×10²³","3.14×10²","9.8×10⁻²","1.6×10⁻¹⁹"], a:0},
+     {type:"tf", q:"المول وحدة تُستخدم لقياس كمية المادة وليس كتلتها مباشرة.", a:true},
+     {type:"mcq", q:"عدد الجزيئات في 0.5 مول من مادة يساوي:", opts:["6.022×10²³","3.011×10²³","1.2044×10²⁴","6.022×10²²"], a:1},
+   ]},
+  {code:"5-2", title:"الكتلة والمول", video:"5NiELgF9Jfc",
+   intro:"لو أردت وزن مول واحد من الحديد على الميزان، كم جرامًا تتوقع أن يزن بالضبط؟",
+   explanation:"الكتلة المولية لعنصر ما تساوي عدديًا كتلته الذرية الموجودة في الجدول الدوري، لكن بوحدة جرام لكل مول (g/mol). تُستخدم الكتلة المولية كعامل تحويل أساسي بين كتلة العنصر بالجرام وعدد مولاته، وفق العلاقة: عدد المولات = الكتلة (بالجرام) ÷ الكتلة المولية.",
+   table:null,
+   example:"<b>مثال:</b> احسب عدد مولات الحديد الموجودة في 111.7 جرام من الحديد، علمًا بأن الكتلة الذرية للحديد تساوي 55.85 g/mol.<br><span class='step'>الحل: عدد المولات = الكتلة ÷ الكتلة المولية = 111.7 ÷ 55.85 = 2 مول من الحديد.</span>",
+   summary:["الكتلة المولية = الكتلة الذرية بوحدة g/mol","عدد المولات = الكتلة بالجرام ÷ الكتلة المولية","الكتلة المولية عامل تحويل أساسي بين الجرام والمول"],
+   mistakes:"نسيان وحدة القياس الصحيحة (g/mol) عند التعامل مع الكتلة المولية، أو قسمة الكتلة المولية على الكتلة بدلًا من العكس.",
+   think:"لماذا تختلف كتلة مول واحد من عناصر مختلفة (كالحديد والهيدروجين) رغم أن كليهما يحتوي على نفس عدد الذرات (عدد أفوجادرو)؟",
+   quiz:[
+     {type:"mcq", q:"وحدة الكتلة المولية هي:", opts:["جرام","g/mol","مول فقط","كجم"], a:1},
+     {type:"tf", q:"عدد المولات = الكتلة المولية ÷ الكتلة بالجرام.", a:false},
+     {type:"mcq", q:"إذا كانت الكتلة المولية لعنصر 40 g/mol وكتلته 80 جرامًا، فعدد مولاته:", opts:["0.5 مول","2 مول","40 مول","3200 مول"], a:1},
+   ]},
+  {code:"5-3", title:"مولات المركبات", video:"C63wMxN7sAY",
+   intro:"إذا أردت حساب الكتلة المولية للماء H₂O، هل تجمع فقط كتلتي الهيدروجين والأكسجين، أم هناك خطوة إضافية؟",
+   explanation:"تُحسب الكتلة المولية للمركّب بجمع الكتل المولية لكل العناصر المكوّنة له، مع الأخذ بعين الاعتبار عدد ذرات كل عنصر في الصيغة الكيميائية للمركّب. بعد حساب الكتلة المولية للمركّب، يمكن استخدامها للتحويل بين كتلة المركّب بالجرام وعدد مولاته، وبين عدد المولات وعدد الجزيئات (بضربها في عدد أفوجادرو).",
+   table:null,
+   example:"<b>مثال:</b> احسب الكتلة المولية للماء H₂O، علمًا بأن الكتلة الذرية للهيدروجين ≈ 1 g/mol وللأكسجين ≈ 16 g/mol.<br><span class='step'>الحل: الجزيء H₂O يحتوي على ذرتي هيدروجين وذرة أكسجين واحدة.<br>الكتلة المولية = (2 × 1) + (1 × 16) = 2 + 16 = 18 g/mol.</span>",
+   summary:["الكتلة المولية للمركّب = مجموع الكتل المولية لعناصره × عدد ذرات كل عنصر","تحويل المولات إلى عدد جزيئات يتم بضربها في عدد أفوجادرو","الكتلة المولية أداة أساسية لكل الحسابات الكيميائية اللاحقة"],
+   mistakes:"نسيان ضرب الكتلة الذرية لعنصر بعدد ذراته في الصيغة الكيميائية قبل جمعها مع باقي العناصر.",
+   think:"احسب بنفسك الكتلة المولية لثاني أكسيد الكربون CO₂ (الكربون ≈ 12 g/mol، الأكسجين ≈ 16 g/mol) — ما الإجابة التي توصلت لها؟",
+   quiz:[
+     {type:"mcq", q:"الكتلة المولية لثاني أكسيد الكربون CO₂ (C=12, O=16) تساوي:", opts:["28 g/mol","44 g/mol","16 g/mol","12 g/mol"], a:1},
+     {type:"tf", q:"عند حساب الكتلة المولية للمركّب، نتجاهل عدد ذرات كل عنصر في الصيغة الكيميائية.", a:false},
+     {type:"mcq", q:"لتحويل عدد مولات مركّب إلى عدد جزيئاته، نضرب في:", opts:["الكتلة المولية","عدد أفوجادرو","الكتلة بالجرام","لا حاجة لأي ضرب"], a:1},
+   ]},
+]},
+];
+
+/* ================= Virtual Lab configs (18 experiments, no DB save) ================= */
+const labConfigs = {
+"1-1": {type:"toggle", instruction:"اضغط لمشاهدة الفرق بين ترتيب ذرات الماس والجرافيت:", options:[
+  {label:"الماس 💎", panel:"<b>ترتيب هرمي ثلاثي الأبعاد:</b> كل ذرة كربون ترتبط بـ4 ذرات أخرى بروابط قوية جدًا في كل الاتجاهات → صلابة فائقة وعزل كهربائي.", visual:"💎💎💎<br>💎💎💎<br>💎💎💎"},
+  {label:"الجرافيت ✏️", panel:"<b>طبقات سداسية مسطحة:</b> الذرات مرتبطة بقوة داخل كل طبقة، لكن الطبقات نفسها تنزلق فوق بعضها بسهولة → طري وموصل للكهرباء.", visual:"▬▬▬▬▬▬<br>▬▬▬▬▬▬<br>▬▬▬▬▬▬"}
+]},
+"1-2": {type:"reveal", instruction:"اضغط على أي عيّنة لمعرفة أي فرع من فروع الكيمياء يدرسها:", cards:[
+  {label:"💊 دواء", panel:"يندرج تحت <b>الكيمياء العضوية</b> غالبًا لأن معظم الأدوية مركبات كربونية معقدة."},
+  {label:"⚙️ سبيكة معدنية", panel:"تُدرس ضمن <b>الكيمياء غير العضوية</b> لأنها تتكون من عناصر فلزية."},
+  {label:"🩸 عينة دم", panel:"تحليل مكوناتها يندرج تحت <b>الكيمياء التحليلية</b> لتحديد نسب موادها."},
+  {label:"🔋 بطارية", panel:"تعتمد على <b>الكيمياء الفيزيائية</b> لدراسة الطاقة الناتجة عن تفاعلاتها الكهروكيميائية."}
+]},
+"1-3": {type:"reveal", instruction:"اختر متغيرًا مستقلًا لتشاهد فرضية علمية مقترحة تلقائيًا:", cards:[
+  {label:"🌡️ درجة الحرارة", panel:"<b>الفرضية المقترحة:</b> «زيادة درجة الحرارة تزيد من سرعة ذوبان السكر في الماء».<br>المتغير المستقل: الحرارة — المتغير التابع: زمن الذوبان."},
+  {label:"🧪 التركيز", panel:"<b>الفرضية المقترحة:</b> «زيادة تركيز الحمض تزيد من سرعة تفاعله مع الفلز».<br>المتغير المستقل: التركيز — المتغير التابع: سرعة التفاعل."},
+  {label:"💡 الضوء", panel:"<b>الفرضية المقترحة:</b> «زيادة شدة الضوء تزيد من سرعة عملية البناء الضوئي للنبات».<br>المتغير المستقل: شدة الضوء — المتغير التابع: معدل نمو النبات."}
+]},
+"1-4": {type:"toggle", instruction:"قارن بين نوعي البحث العلمي:", options:[
+  {label:"🔎 بحث وصفي", panel:"يعتمد على <b>الملاحظة والتصنيف</b> دون تجربة ضابطة.<br>مثال: رصد باحث لهجرة الطيور موسميًا بالتصوير والتسجيل فقط.", visual:"👁️ ← 📝"},
+  {label:"⚗️ بحث تجريبي", panel:"يختبر <b>فرضية عبر تجربة مضبوطة</b> بمتغيرات محددة (مستقل، تابع، ضابط).<br>مثال: قياس أثر الحرارة على سرعة تفاعل كيميائي في المعمل.", visual:"⚗️ ← 📊"}
+]},
+"2-1": {type:"reveal", instruction:"اضغط على كل خاصية لمعرفة تصنيفها (لقطعة حديد):", cards:[
+  {label:"لون رمادي لامع", panel:"<b>خاصية فيزيائية</b> — تُلاحظ دون تغيير تركيب المادة الكيميائي."},
+  {label:"نقطة انصهار 1538°م", panel:"<b>خاصية فيزيائية</b> — تُقاس دون حدوث أي تفاعل كيميائي."},
+  {label:"القابلية للصدأ", panel:"<b>خاصية كيميائية</b> — تظهر فقط عند تفاعل الحديد مع الأكسجين والرطوبة لتكوين مادة جديدة."},
+  {label:"التوصيل الكهربائي", panel:"<b>خاصية فيزيائية</b> — تُقاس دون تغيير هوية المادة."}
+]},
+"2-2": {type:"toggle", instruction:"غيّر حالة الماء أو جرّب تغييرًا كيميائيًا وشاهد التصنيف:", options:[
+  {label:"🧊 ثلج", panel:"<b>تغير فيزيائي (حالة صلبة):</b> نفس جزيئات الماء H₂O، فقط مرتبة بإحكام بفعل البرودة.", visual:"🧊🧊🧊"},
+  {label:"💧 ماء سائل", panel:"<b>تغير فيزيائي (انصهار):</b> نفس التركيب الكيميائي H₂O، تغيرت فقط الحالة الفيزيائية — قابل للعكس بالتجميد.", visual:"💧💧💧"},
+  {label:"💨 بخار", panel:"<b>تغير فيزيائي (تبخر):</b> ما زال H₂O، فقط الجزيئات ابتعدت عن بعضها بفعل الحرارة.", visual:"💨💨💨"},
+  {label:"🔥 حرق ورقة", panel:"<b>تغير كيميائي!</b> الورق تحوّل لرماد وثاني أكسيد كربون وبخار ماء — مواد جديدة كليًا لا يمكن الرجوع منها للورق الأصلي.", visual:"📄→🔥→⬛"}
+]},
+"2-3": {type:"mix", instruction:"اخلط رملًا وملحًا وماءً، ثم اختر طريقة فصل مناسبة:", mixLabel:"اخلط المكونات 🧂+💧+🏖️",
+  afterMix:"تكوّن مخلوط غير متجانس: حبيبات الرمل ظاهرة، والملح ذاب في الماء.",
+  methods:[
+    {label:"🔍 الترشيح", panel:"<b>ناجح جزئيًا:</b> يفصل الرمل الصلب عن محلول الملح المائي، لكن الملح يبقى ذائبًا في الماء الراشح."},
+    {label:"🔥 التبخير", panel:"<b>ناجح:</b> بتسخين محلول الملح بعد الترشيح، يتبخر الماء تاركًا بلورات الملح الصلبة نقية."}
+  ]},
+"2-4": {type:"mix", instruction:"ادمج عنصري الهيدروجين والأكسجين وشاهد الناتج:", mixLabel:"ادمج H₂ + O₂ 🔥",
+  afterMix:"<b>تكوّن مركّب جديد: الماء H₂O!</b><br>لاحظ أن خواص الماء (سائل، يُطفئ النار) مختلفة تمامًا عن خواص غازي الهيدروجين والأكسجين الأصليين — لأنهما اتحدا كيميائيًا بنسبة ثابتة (2:1) وليس مجرد خلط فيزيائي.",
+  methods:[]},
+"3-1": {type:"toggle", instruction:"تنقّل بين النماذج التاريخية لفهم تطور فكرة الذرة:", options:[
+  {label:"ديمقريطس (فلسفي)", panel:"افترض أن المادة تتكون من جسيمات غير قابلة للانقسام «أتوموس» — <b>دون أي دليل تجريبي</b>، مجرد تخمين فلسفي.", visual:"⚫ (كتلة مصمتة)"},
+  {label:"دالتون (1803)", panel:"أول <b>نظرية علمية</b> للذرة: كرة صلبة مصمتة، وذرات العنصر الواحد متماثلة تمامًا.", visual:"⚫ كرة صلبة"},
+  {label:"طومسون (1897)", panel:"اكتشف <b>الإلكترون</b> واقترح نموذج «كعكة الزبيب»: كرة موجبة مع إلكترونات سالبة موزعة بداخلها.", visual:"⚫ مع نقاط سالبة (−)"},
+  {label:"رذرفورد (1911)", panel:"أثبت وجود <b>نواة صغيرة كثيفة موجبة</b> في المركز، ومعظم حجم الذرة فراغ تدور فيه الإلكترونات.", visual:"• (نواة صغيرة) + مدارات فارغة"}
+]},
+"3-2": {type:"atom-builder", instruction:"أضف بروتونات ونيوترونات وإلكترونات وشاهد أي عنصر يتكوّن:", fixNeutrons:false},
+"3-3": {type:"atom-builder", instruction:"ثبّت عدد البروتونات (6 = كربون) وغيّر عدد النيوترونات لصنع نظائر مختلفة:", fixProtons:6},
+"3-4": {type:"reveal", instruction:"اضغط على نوع الإشعاع لمعرفة قوة اختراقه وما يوقفه:", cards:[
+  {label:"☢️ ألفا (α)", panel:"<b>ضعيف الاختراق</b> — عبارة عن نواة هيليوم ثقيلة، تكفي ورقة عادية لإيقافه تمامًا."},
+  {label:"☢️ بيتا (β)", panel:"<b>اختراق متوسط</b> — إلكترون سريع، يحتاج صفيحة ألمنيوم رقيقة لإيقافه."},
+  {label:"☢️ جاما (γ)", panel:"<b>اختراق شديد جدًا</b> — موجة كهرومغناطيسية عالية الطاقة، تحتاج حاجز رصاص أو خرسانة سميكة لإيقافها."}
+]},
+"4-1": {type:"balancer", instruction:"وازن المعادلة بالضغط على + و− أمام كل معامل حتى يتساوى عدد الذرات:",
+  reactants:[{sym:"H₂",count:2},{sym:"O₂",count:1}], products:[{sym:"H₂O",count:2}],
+  atomsPer:{"H₂":{H:2}, "O₂":{O:2}, "H₂O":{H:2,O:1}}, target:{H2:2,O2:1,H2O:2}},
+"4-2": {type:"reveal", instruction:"اضغط على معادلة لتصنيف نوع التفاعل:", cards:[
+  {label:"2H₂+O₂→2H₂O", panel:"<b>تفاعل اتحاد (تكوين):</b> مادتان تتحدان لتكوين مادة واحدة جديدة."},
+  {label:"2H₂O₂→2H₂O+O₂", panel:"<b>تفاعل تفكك:</b> مادة واحدة تتفكك إلى مادتين أو أكثر."},
+  {label:"Zn+2HCl→ZnCl₂+H₂", panel:"<b>إحلال أحادي (بسيط):</b> عنصر منفرد يحل محل عنصر آخر في مركّب."},
+  {label:"AgNO₃+NaCl→AgCl+NaNO₃", panel:"<b>إحلال ثنائي (مزدوج):</b> مركبان يتبادلان الأيونات فيما بينهما."}
+]},
+"4-3": {type:"mix", instruction:"اخلط محلولي نترات الفضة وكلوريد الصوديوم:", mixLabel:"اخلط AgNO₃ + NaCl 🧪",
+  afterMix:"<b>يتكوّن راسب أبيض غائم فورًا!</b><br>المعادلة الكاملة: AgNO₃ + NaCl → AgCl↓ + NaNO₃<br>المعادلة الأيونية الصافية (بعد حذف الأيونات المتفرجة Na⁺ و NO₃⁻): <b>Ag⁺ + Cl⁻ → AgCl↓</b>",
+  methods:[]},
+"5-1": {type:"mole-slider", instruction:"حرّك المؤشر لتغيير عدد المولات وشاهد عدد الجسيمات الفعلي:", mode:"particles"},
+"5-2": {type:"mole-slider", instruction:"اختر عنصرًا وحرّك المؤشر لتغيير الكتلة بالجرام لحساب عدد المولات:", mode:"mass",
+  elements:[{name:"الحديد Fe", molar:55.85},{name:"الألومنيوم Al", molar:26.98},{name:"النحاس Cu", molar:63.55}]},
+"5-3": {type:"mole-slider", instruction:"اختر مركّبًا لحساب كتلته المولية تلقائيًا من عناصره:", mode:"compound",
+  compounds:[
+    {name:"الماء H₂O", parts:[{sym:"H",count:2,mass:1},{sym:"O",count:1,mass:16}]},
+    {name:"ثاني أكسيد الكربون CO₂", parts:[{sym:"C",count:1,mass:12},{sym:"O",count:2,mass:16}]},
+    {name:"كلوريد الصوديوم NaCl", parts:[{sym:"Na",count:1,mass:23},{sym:"Cl",count:1,mass:35.5}]}
+  ]},
+};
+
+const elementNames = {1:"هيدروجين H",2:"هيليوم He",3:"ليثيوم Li",4:"بريليوم Be",5:"بورون B",6:"كربون C",7:"نيتروجين N",8:"أكسجين O",9:"فلور F",10:"نيون Ne",11:"صوديوم Na",12:"مغنيسيوم Mg",13:"ألومنيوم Al",14:"سيليكون Si",15:"فوسفور P",16:"كبريت S",17:"كلور Cl",18:"أرجون Ar",19:"بوتاسيوم K",20:"كالسيوم Ca"};
+
+/* ================= State ================= */
+let currentStudent = null;
+let currentLesson = null;
+let studentDashData = null;
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setMsg(el, text, type){ el.textContent = text; el.className = 'msg show ' + (type||''); }
+function clearMsg(el){ el.className = 'msg'; el.textContent=''; }
+
+function renderNav(){
+  const nav = document.getElementById('navActions');
+  document.getElementById('assistantFab').style.display = currentStudent ? 'block' : 'none';
+  if(!currentStudent) document.getElementById('assistantPanel').classList.remove('open');
+  if(currentStudent){
+    nav.innerHTML = `<span class="pill">👋 ${currentStudent.name}</span>
+      <button class="btn btn-ghost btn-sm" id="navTeacher">لوحة المعلم</button>
+      <button class="btn btn-primary btn-sm" id="navLogout">تسجيل الخروج</button>`;
+    document.getElementById('navLogout').onclick = logout;
+    document.getElementById('navTeacher').onclick = ()=>showView('view-teacher-login');
+  } else {
+    nav.innerHTML = `<button class="btn btn-ghost btn-sm" id="navTeacher">دخول المعلم</button>`;
+    document.getElementById('navTeacher').onclick = ()=>showView('view-teacher-login');
+  }
+}
+renderNav();
+document.getElementById('logoHome').onclick = ()=>{ if(currentStudent) showView('view-student'); };
+
+/* ================= Auth tabs ================= */
+document.getElementById('tabLogin').onclick = ()=>{
+  document.getElementById('tabLogin').classList.add('active');
+  document.getElementById('tabRegister').classList.remove('active');
+  document.getElementById('loginForm').style.display='block';
+  document.getElementById('registerForm').style.display='none';
+  clearMsg(document.getElementById('authMsg'));
+};
+document.getElementById('tabRegister').onclick = ()=>{
+  document.getElementById('tabRegister').classList.add('active');
+  document.getElementById('tabLogin').classList.remove('active');
+  document.getElementById('registerForm').style.display='block';
+  document.getElementById('loginForm').style.display='none';
+  clearMsg(document.getElementById('authMsg'));
+};
+
+/* ================= Register / Login ================= */
+document.getElementById('registerForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const msg = document.getElementById('authMsg'); clearMsg(msg);
+  const name = document.getElementById('regName').value.trim();
+  const grade = document.getElementById('regGrade').value.trim();
+  const section = document.getElementById('regSection').value.trim();
+  const seat = document.getElementById('regSeat').value.trim();
+  const pin = document.getElementById('regPin').value.trim();
+  if(!/^\d{4}$/.test(pin)){ setMsg(msg,'رمز الدخول يجب أن يكون 4 أرقام بالضبط.','err'); return; }
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> جارٍ الإنشاء...';
+  try{
+    await rpc('register_student', {p_name:name, p_grade:grade, p_section:section, p_seat:seat||null, p_pin:pin});
+    const rows = await rpc('login_student', {p_name:name, p_pin:pin});
+    if(rows && rows.length){ await loginSuccess(rows[0]); }
+  } catch(err){
+    if(String(err.message).includes('STUDENT_EXISTS')){
+      setMsg(msg,'هذا الاسم مسجّل مسبقًا في نفس الشعبة. جرّب تسجيل الدخول بدلًا من ذلك.','err');
+    } else { setMsg(msg,'تعذّر إنشاء الحساب: '+err.message,'err'); }
+  } finally { btn.disabled=false; btn.textContent='إنشاء الحساب والدخول'; }
+});
+
+document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const msg = document.getElementById('authMsg'); clearMsg(msg);
+  const name = document.getElementById('loginName').value.trim();
+  const pin = document.getElementById('loginPin').value.trim();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> جارٍ الدخول...';
+  try{
+    const rows = await rpc('login_student', {p_name:name, p_pin:pin});
+    if(rows && rows.length){ await loginSuccess(rows[0]); }
+    else { setMsg(msg,'الاسم أو رمز الدخول غير صحيح.','err'); }
+  } catch(err){ setMsg(msg,'تعذّر تسجيل الدخول: '+err.message,'err'); }
+  finally { btn.disabled=false; btn.textContent='دخول'; }
+});
+
+async function loginSuccess(student){
+  currentStudent = student;
+  renderNav();
+  showView('view-student');
+  document.getElementById('studentWelcome').textContent = `أهلًا ${student.name} 👋`;
+  await refreshStudentDashboard();
+}
+function logout(){
+  currentStudent = null; studentDashData = null;
+  renderNav();
+  document.getElementById('loginForm').reset();
+  document.getElementById('registerForm').reset();
+  showView('view-auth');
+}
+
+/* ================= Student dashboard + curriculum browser ================= */
+/* ================= Badges ================= */
+const badgeDefs = [
+  {code:"first_lesson", icon:"🏅", name:"أول درس", check:d=>(d.completed_lessons||[]).length>=1},
+  {code:"chapter1_done", icon:"🥇", name:"الفصل 1 كامل", check:d=>["1-1","1-2","1-3","1-4"].every(c=>(d.completed_lessons||[]).includes(c))},
+  {code:"chapter2_done", icon:"🥇", name:"الفصل 2 كامل", check:d=>["2-1","2-2","2-3","2-4"].every(c=>(d.completed_lessons||[]).includes(c))},
+  {code:"chapter3_done", icon:"🥇", name:"الفصل 3 كامل", check:d=>["3-1","3-2","3-3","3-4"].every(c=>(d.completed_lessons||[]).includes(c))},
+  {code:"chapter4_done", icon:"🥇", name:"الفصل 4 كامل", check:d=>["4-1","4-2","4-3"].every(c=>(d.completed_lessons||[]).includes(c))},
+  {code:"chapter5_done", icon:"🥇", name:"الفصل 5 كامل", check:d=>["5-1","5-2","5-3"].every(c=>(d.completed_lessons||[]).includes(c))},
+  {code:"all_done", icon:"🎓", name:"المنهج كامل", check:d=>(d.completed_lessons||[]).length>=18},
+  {code:"five_quizzes", icon:"⭐", name:"5 اختبارات", check:d=>(d.quiz_results||[]).length>=5},
+  {code:"perfect_score", icon:"🌟", name:"علامة كاملة", check:d=>(d.quiz_results||[]).some(r=>r.score===r.total)},
+  {code:"streak3", icon:"🔥", name:"3 أيام متتالية", check:d=>(d.streak_days||0)>=3},
+  {code:"streak7", icon:"🔥🔥", name:"أسبوع متتالي", check:d=>(d.streak_days||0)>=7},
+];
+
+async function checkAndGrantBadges(){
+  const earned = new Set(studentDashData.badges||[]);
+  for(const b of badgeDefs){
+    if(!earned.has(b.code) && b.check(studentDashData)){
+      try{ await rpc('grant_badge', {p_student_id: currentStudent.id, p_badge_code: b.code}); earned.add(b.code); }catch(e){}
+    }
+  }
+  studentDashData.badges = Array.from(earned);
+}
+
+function renderBadges(){
+  const earned = new Set(studentDashData.badges||[]);
+  document.getElementById('badgesRow').innerHTML = badgeDefs.map(b=>`
+    <div class="badge-card ${earned.has(b.code)?'':'locked'}">
+      <span class="bicon">${b.icon}</span><span class="bname">${b.name}</span>
+    </div>`).join('');
+}
+
+/* ================= Search ================= */
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('#curriculumBrowser .chapter-block').forEach(block=>{
+    let anyVisible = false;
+    block.querySelectorAll('.lesson-row').forEach(row=>{
+      const match = row.textContent.toLowerCase().includes(q);
+      row.style.display = match ? 'flex' : 'none';
+      if(match) anyVisible = true;
+    });
+    block.style.display = (q==='' || anyVisible) ? 'block' : 'none';
+  });
+});
+
+async function refreshStudentDashboard(){
+  studentDashData = await rpc('get_student_dashboard', {p_student_id: currentStudent.id});
+  document.getElementById('statPoints').textContent = studentDashData.points ?? 0;
+  document.getElementById('statStreak').textContent = studentDashData.streak_days ?? 0;
+  document.getElementById('statDone').textContent = `${(studentDashData.completed_lessons||[]).length}/18`;
+  const results = studentDashData.quiz_results || [];
+  if(results.length){
+    const avg = Math.round(results.reduce((a,r)=>a+(r.score/r.total*100),0)/results.length);
+    document.getElementById('statAvg').textContent = avg+'٪';
+  } else { document.getElementById('statAvg').textContent = '—'; }
+  await checkAndGrantBadges();
+  renderBadges();
+  renderCurriculumBrowser();
+}
+
+function renderCurriculumBrowser(){
+  const completedSet = new Set(studentDashData.completed_lessons||[]);
+  const wrap = document.getElementById('curriculumBrowser');
+  wrap.innerHTML='';
+  curriculum.forEach(ch=>{
+    const block = document.createElement('div');
+    block.className='chapter-block';
+    block.innerHTML = `<h3><span class="cbadge">${ch.chapter}</span> ${ch.title}</h3>`;
+    ch.lessons.forEach(l=>{
+      const done = completedSet.has(l.code);
+      const row = document.createElement('div');
+      row.className='lesson-row';
+      row.innerHTML = `<div><span class="code">${l.code}</span>${l.title}</div>
+        ${done ? '<span class="badge-done">✓ مكتمل</span>' : '<span class="badge-todo">لم يبدأ</span>'}`;
+      row.onclick = ()=>openLesson(l);
+      block.appendChild(row);
+    });
+    wrap.appendChild(block);
+  });
+}
+
+
+document.getElementById('backToLessons').onclick = ()=>showView('view-student');
+
+function openLesson(lesson){
+  currentLesson = lesson;
+  document.getElementById('lessonCode').textContent = lesson.code;
+  document.getElementById('lessonTitle').textContent = lesson.title;
+  document.getElementById('lessonVideo').src = `https://www.youtube.com/embed/${lesson.video}`;
+  document.getElementById('lessonIntro').textContent = lesson.intro;
+  document.getElementById('lessonExplanation').textContent = lesson.explanation;
+  const tableWrap = document.getElementById('lessonTableWrap');
+  if(lesson.table){
+    tableWrap.style.display='block';
+    const t = lesson.table;
+    document.getElementById('lessonTable').innerHTML = `<table class="data-table"><thead><tr>${t.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${t.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  } else { tableWrap.style.display='none'; }
+  document.getElementById('lessonExample').innerHTML = lesson.example;
+  document.getElementById('lessonSummary').innerHTML = lesson.summary.map(s=>`<li>${s}</li>`).join('');
+  document.getElementById('lessonMistakes').textContent = lesson.mistakes;
+  document.getElementById('lessonThink').textContent = lesson.think;
+  renderLab(lesson.code);
+  document.getElementById('quizContainer').innerHTML='';
+  document.getElementById('startQuizBtn').style.display='inline-block';
+  document.getElementById('startQuizBtn').textContent = 'ابدأ الاختبار السريع';
+  showView('view-lesson');
+}
+
+/* ================= Virtual Lab render engine ================= */
+function renderLab(code){
+  const lab = labConfigs[code];
+  const area = document.getElementById('labArea');
+  if(!lab){ area.innerHTML = '<div class="lab-panel">لا توجد تجربة لهذا الدرس بعد.</div>'; return; }
+  if(lab.type==='toggle') return renderLabToggle(area, lab);
+  if(lab.type==='reveal') return renderLabReveal(area, lab);
+  if(lab.type==='mix') return renderLabMix(area, lab);
+  if(lab.type==='atom-builder') return renderLabAtomBuilder(area, lab);
+  if(lab.type==='balancer') return renderLabBalancer(area, lab);
+  if(lab.type==='mole-slider') return renderLabMoleSlider(area, lab);
+}
+
+function renderLabToggle(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="lab-controls-row" id="toggleBtns"></div>
+    <div class="lab-visual" id="toggleVisual" style="font-size:1.6rem;"></div>
+    <div class="lab-panel" id="togglePanel"></div>`;
+  const btnsWrap = area.querySelector('#toggleBtns');
+  lab.options.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='lab-toggle-btn'+(i===0?' active':'');
+    b.textContent = opt.label;
+    b.onclick = ()=>{
+      btnsWrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      area.querySelector('#togglePanel').innerHTML = opt.panel;
+      area.querySelector('#toggleVisual').innerHTML = opt.visual||'';
+    };
+    btnsWrap.appendChild(b);
+  });
+  area.querySelector('#togglePanel').innerHTML = lab.options[0].panel;
+  area.querySelector('#toggleVisual').innerHTML = lab.options[0].visual||'';
+}
+
+function renderLabReveal(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="lab-reveal-grid" id="revealBtns"></div>
+    <div class="lab-panel" id="revealPanel">اضغط على أحد الخيارات أعلاه لعرض النتيجة هنا.</div>`;
+  const wrap = area.querySelector('#revealBtns');
+  lab.cards.forEach(c=>{
+    const b = document.createElement('button');
+    b.className='lab-toggle-btn';
+    b.textContent = c.label;
+    b.onclick = ()=>{
+      wrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      area.querySelector('#revealPanel').innerHTML = c.panel;
+    };
+    wrap.appendChild(b);
+  });
+}
+
+function renderLabMix(area, lab){
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div style="text-align:center;">
+      <div class="lab-flask" id="mixFlask">
+        <svg viewBox="0 0 200 260"><path d="M78 15H122V95L168 225C173 240 162 252 147 252H53C38 252 27 240 32 225L78 95V15Z" fill="rgba(255,255,255,0.08)" stroke="#F3F5EE" stroke-width="4"/>
+        <path id="mixLiquid" d="M40 200C60 192 140 192 160 200L148 240C146 245 144 247 140 247H60C56 247 54 245 52 240L40 200Z" fill="#2E6F95" opacity="0.5"/></svg>
+      </div>
+      <button class="lab-btn-secondary" id="mixBtn">${lab.mixLabel}</button>
+    </div>
+    <div class="lab-panel" id="mixPanel" style="margin-top:14px;">اضغط الزر أعلاه لبدء التجربة.</div>
+    <div class="lab-controls-row" id="mixMethods" style="margin-top:10px;"></div>`;
+  area.querySelector('#mixBtn').onclick = ()=>{
+    area.querySelector('#mixLiquid').setAttribute('fill', '#E8E8E8');
+    area.querySelector('#mixLiquid').setAttribute('opacity','0.9');
+    area.querySelector('#mixPanel').innerHTML = lab.afterMix;
+    if(lab.methods && lab.methods.length){
+      const mWrap = area.querySelector('#mixMethods');
+      mWrap.innerHTML='';
+      lab.methods.forEach(m=>{
+        const b = document.createElement('button');
+        b.className='lab-toggle-btn';
+        b.textContent = m.label;
+        b.onclick = ()=>{ area.querySelector('#mixPanel').innerHTML = m.panel; };
+        mWrap.appendChild(b);
+      });
+    }
+  };
+}
+
+function renderLabAtomBuilder(area, lab){
+  let p = lab.fixProtons || 1, n = 1, e = lab.fixProtons || 1;
+  const fixedP = !!lab.fixProtons;
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div class="atom-visual" id="atomVisual">
+      <div class="atom-ring" style="width:80px;height:80px;"></div>
+      <div class="atom-ring" style="width:120px;height:120px;"></div>
+      <div class="atom-nucleus" id="atomNucleus"></div>
+    </div>
+    <div id="steppers"></div>
+    <div class="lab-panel" id="atomPanel"></div>`;
+  const steppers = area.querySelector('#steppers');
+  function makeStepper(labelText, get, set, min, disabled){
+    const row = document.createElement('div');
+    row.className='atom-stepper';
+    row.innerHTML = `<span>${labelText}</span>
+      <button class="stepper-btn" ${disabled?'disabled':''}>−</button>
+      <span class="stepper-val">${get()}</span>
+      <button class="stepper-btn" ${disabled?'disabled':''}>+</button>`;
+    const [minusBtn, plusBtn] = row.querySelectorAll('.stepper-btn');
+    const valSpan = row.querySelector('.stepper-val');
+    minusBtn.onclick = ()=>{ if(get()>min){ set(get()-1); valSpan.textContent=get(); update(); } };
+    plusBtn.onclick = ()=>{ set(get()+1); valSpan.textContent=get(); update(); };
+    steppers.appendChild(row);
+  }
+  makeStepper('بروتونات (+)', ()=>p, v=>p=v, 1, fixedP);
+  makeStepper('نيوترونات (0)', ()=>n, v=>n=v, 0, false);
+  if(!fixedP) makeStepper('إلكترونات (−)', ()=>e, v=>e=v, 0, false);
+
+  function update(){
+    const mass = p+n;
+    const charge = p-e;
+    const name = elementNames[p] || `عنصر رقم ${p} (خارج نطاق الأمثلة)`;
+    document.getElementById('atomNucleus').textContent = 'Z='+p;
+    document.getElementById('atomPanel').innerHTML = `
+      <b>العنصر:</b> ${name}<br>
+      <b>العدد الذري (Z):</b> ${p} — <b>العدد الكتلي (A):</b> ${mass}<br>
+      ${!fixedP ? `<b>الشحنة الكلية:</b> ${charge===0?'متعادلة (ذرة)':(charge>0?`أيون موجب (+${charge})`:`أيون سالب (${charge})`)}` : `<b>هذا نظير كربون-${mass}</b> بعدد نيوترونات = ${n}`}`;
+  }
+  update();
+}
+
+function renderLabBalancer(area, lab){
+  let counts = {H2:lab.target.H2 - 1 + 1, O2:lab.target.O2, H2O:1}; // start unbalanced intentionally
+  counts = {H2:1, O2:1, H2O:1};
+  area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+    <div id="balancerRow" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;"></div>
+    <div class="lab-panel" id="balancerPanel" style="margin-top:14px;"></div>`;
+  const row = area.querySelector('#balancerRow');
+
+  function makeCoef(key, formula, isLast){
+    const wrap = document.createElement('span');
+    wrap.style.display='flex'; wrap.style.alignItems='center'; wrap.style.gap='6px';
+    wrap.innerHTML = `<button class="stepper-btn">−</button><span id="c_${key}">${counts[key]}</span><button class="stepper-btn">+</button> ${formula} ${isLast?'':'+'}`;
+    const [minus, plus] = wrap.querySelectorAll('.stepper-btn');
+    minus.onclick=()=>{ if(counts[key]>1){counts[key]--; wrap.querySelector('#c_'+key).textContent=counts[key]; check();} };
+    plus.onclick=()=>{ counts[key]++; wrap.querySelector('#c_'+key).textContent=counts[key]; check(); };
+    return wrap;
+  }
+  row.appendChild(makeCoef('H2','H₂',false));
+  row.appendChild(makeCoef('O2','O₂',false));
+  const arrow = document.createElement('span'); arrow.textContent='→'; row.appendChild(arrow);
+  row.appendChild(makeCoef('H2O','H₂O',true));
+
+  function check(){
+    const Hleft = counts.H2*2, Oleft = counts.O2*2;
+    const Hright = counts.H2O*2, Oright = counts.H2O*1;
+    const balanced = (Hleft===Hright) && (Oleft===Oright);
+    document.getElementById('balancerPanel').innerHTML = balanced
+      ? `<b style="color:#7BE0A0;">✅ متزنة!</b> عدد ذرات الهيدروجين (${Hleft}) وعدد ذرات الأكسجين (${Oleft}) متساوٍ في الطرفين.`
+      : `عدد الهيدروجين: يسار ${Hleft} — يمين ${Hright} | عدد الأكسجين: يسار ${Oleft} — يمين ${Oright}. عدّل المعاملات حتى تتساوى الأعداد.`;
+  }
+  check();
+}
+
+function renderLabMoleSlider(area, lab){
+  const NA = 6.022e23;
+  if(lab.mode==='particles'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-slider-row"><label>عدد المولات</label>
+      <input type="range" id="moleSlider" min="0" max="3" step="0.25" value="1">
+      <span class="lab-value" id="moleVal">n = 1 مول</span></div>
+      <div class="lab-panel" id="molePanel"></div>`;
+    const slider = area.querySelector('#moleSlider');
+    function upd(){
+      const n = +slider.value;
+      area.querySelector('#moleVal').textContent = `n = ${n} مول`;
+      const particles = (n*NA).toExponential(3);
+      area.querySelector('#molePanel').innerHTML = `عدد الجسيمات = n × عدد أفوجادرو = ${n} × 6.022×10²³ = <b>${particles} جسيم</b>`;
+    }
+    slider.oninput = upd; upd();
+  }
+  if(lab.mode==='mass'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-controls-row" id="elBtns"></div>
+      <div class="lab-slider-row"><label>الكتلة (جرام)</label>
+      <input type="range" id="massSlider" min="1" max="200" step="1" value="50">
+      <span class="lab-value" id="massVal">50 جرام</span></div>
+      <div class="lab-panel" id="massPanel"></div>`;
+    let selectedEl = lab.elements[0];
+    const elWrap = area.querySelector('#elBtns');
+    lab.elements.forEach((el,i)=>{
+      const b = document.createElement('button');
+      b.className='lab-toggle-btn'+(i===0?' active':'');
+      b.textContent = el.name;
+      b.onclick = ()=>{ elWrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); selectedEl=el; upd(); };
+      elWrap.appendChild(b);
+    });
+    const slider = area.querySelector('#massSlider');
+    function upd(){
+      const mass = +slider.value;
+      area.querySelector('#massVal').textContent = mass+' جرام';
+      const moles = (mass/selectedEl.molar).toFixed(3);
+      area.querySelector('#massPanel').innerHTML = `عدد المولات = الكتلة ÷ الكتلة المولية = ${mass} ÷ ${selectedEl.molar} = <b>${moles} مول</b> من ${selectedEl.name}`;
+    }
+    slider.oninput = upd; upd();
+  }
+  if(lab.mode==='compound'){
+    area.innerHTML = `<p style="margin-top:0;font-size:.9rem;color:rgba(243,245,238,.85);">${lab.instruction}</p>
+      <div class="lab-controls-row" id="cmpBtns"></div>
+      <div class="lab-panel" id="cmpPanel"></div>`;
+    const wrap = area.querySelector('#cmpBtns');
+    function show(cmp){
+      const breakdown = cmp.parts.map(p=>`${p.sym}×${p.count} = ${p.count*p.mass}`).join(' + ');
+      const total = cmp.parts.reduce((a,p)=>a+p.count*p.mass,0);
+      area.querySelector('#cmpPanel').innerHTML = `${breakdown} = <b>${total} g/mol</b> للكتلة المولية الكلية لـ${cmp.name}`;
+    }
+    lab.compounds.forEach((cmp,i)=>{
+      const b = document.createElement('button');
+      b.className='lab-toggle-btn'+(i===0?' active':'');
+      b.textContent = cmp.name;
+      b.onclick = ()=>{ wrap.querySelectorAll('.lab-toggle-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); show(cmp); };
+      wrap.appendChild(b);
+    });
+    show(lab.compounds[0]);
+  }
+}
+
+/* ================= Quiz engine ================= */
+document.getElementById('startQuizBtn').onclick = ()=>runQuiz(currentLesson);
+
+function runQuiz(lesson){
+  let qi = 0, score = 0;
+  const container = document.getElementById('quizContainer');
+  document.getElementById('startQuizBtn').style.display='none';
+
+  function renderQ(){
+    if(qi >= lesson.quiz.length){
+      finishQuiz();
+      return;
+    }
+    const q = lesson.quiz[qi];
+    const opts = q.type==='tf' ? ['صح','خطأ'] : q.opts;
+    container.innerHTML = `<div class="quiz-card">
+      <div class="qprogress">Q ${qi+1} / ${lesson.quiz.length}</div>
+      <div class="qtext">${q.q}</div>
+      <div id="optsWrap">${opts.map((o,i)=>`<button class="opt-btn" data-i="${i}">${o}</button>`).join('')}</div>
+    </div>`;
+    container.querySelectorAll('.opt-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        const i = +btn.dataset.i;
+        const correctIndex = q.type==='tf' ? (q.a===true?0:1) : q.a;
+        container.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+        if(i===correctIndex){ btn.classList.add('correct'); score++; }
+        else {
+          btn.classList.add('wrong');
+          container.querySelectorAll('.opt-btn')[correctIndex].classList.add('correct');
+        }
+        setTimeout(()=>{ qi++; renderQ(); }, 900);
+      };
+    });
+  }
+
+  async function finishQuiz(){
+    container.innerHTML = `<div class="quiz-card"><div class="quiz-result"><div class="sc">${score}/${lesson.quiz.length}</div><p>جارٍ حفظ النتيجة...</p></div></div>`;
+    try{
+      await rpc('submit_quiz_result', {p_student_id: currentStudent.id, p_lesson_code: lesson.code, p_score:score, p_total: lesson.quiz.length, p_wrong: JSON.stringify([])});
+      await rpc('mark_lesson_complete', {p_student_id: currentStudent.id, p_lesson_code: lesson.code});
+      await refreshStudentDashboard();
+      container.innerHTML = `<div class="quiz-card"><div class="quiz-result">
+        <div class="sc">${score}/${lesson.quiz.length}</div>
+        <p>تم حفظ نتيجتك وتحديد الدرس كمكتمل ✅</p>
+        <button class="btn btn-primary" id="backAfterQuiz">العودة لقائمة الدروس</button>
+      </div></div>`;
+      document.getElementById('backAfterQuiz').onclick = ()=>showView('view-student');
+    } catch(err){
+      container.innerHTML = `<div class="quiz-card"><div class="msg show err">تعذّر حفظ النتيجة: ${err.message}</div></div>`;
+    }
+  }
+  renderQ();
+}
+
+/* ================= Teacher ================= */
+document.getElementById('teacherLoginBtn').onclick = async ()=>{
+  const msg = document.getElementById('teacherMsg'); clearMsg(msg);
+  const pin = document.getElementById('teacherPin').value.trim();
+  const btn = document.getElementById('teacherLoginBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> جارٍ التحقق...';
+  try{
+    const rows = await rpc('get_all_students_for_teacher', {p_teacher_pin: pin});
+    showView('view-teacher');
+    renderTeacherDashboard(rows);
+  } catch(err){
+    setMsg(msg, String(err.message).includes('INVALID_TEACHER_PIN') ? 'رمز المعلم غير صحيح.' : err.message, 'err');
+  } finally { btn.disabled=false; btn.textContent='دخول لوحة المعلم'; }
+};
+
+function renderTeacherDashboard(rows){
+  const totalStudents = rows.length;
+  const avgPoints = totalStudents ? Math.round(rows.reduce((a,r)=>a+r.points,0)/totalStudents) : 0;
+  const totalQuizzes = rows.reduce((a,r)=>a+Number(r.quizzes_taken||0),0);
+  const avgScoreArr = rows.filter(r=>r.avg_score!=null);
+  const overallAvg = avgScoreArr.length ? Math.round(avgScoreArr.reduce((a,r)=>a+Number(r.avg_score),0)/avgScoreArr.length) : 0;
+  document.getElementById('teacherStats').innerHTML = `
+    <div class="stat-box"><b>${totalStudents}</b><span>عدد الطلاب</span></div>
+    <div class="stat-box"><b>${avgPoints}</b><span>متوسط النقاط</span></div>
+    <div class="stat-box"><b>${totalQuizzes}</b><span>اختبارات أُنجزت</span></div>
+    <div class="stat-box"><b>${overallAvg}٪</b><span>متوسط الدرجات</span></div>`;
+  const body = document.getElementById('teacherTableBody');
+  if(!rows.length){ body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);">لا يوجد طلاب مسجلون بعد.</td></tr>`; return; }
+  body.innerHTML = rows.map(r=>`<tr><td>${r.name}</td><td>${r.section||'—'}</td><td>${r.points}</td><td>${r.lessons_done}</td><td>${r.quizzes_taken}</td><td>${r.avg_score!=null ? r.avg_score+'٪' : '—'}</td></tr>`).join('');
+}
+/* ================= مساعد الكيميائي (بحث محلي ذكي، بدون API خارجي) ================= */
+document.getElementById('assistantFab').onclick = ()=>{
+  document.getElementById('assistantPanel').classList.toggle('open');
+};
+document.getElementById('assistantClose').onclick = ()=>{
+  document.getElementById('assistantPanel').classList.remove('open');
+};
+
+function addAssistantMsg(text, who){
+  const body = document.getElementById('assistantBody');
+  const div = document.createElement('div');
+  div.className = 'a-msg ' + (who==='user' ? 'a-user' : 'a-bot');
+  div.innerHTML = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+
+function findBestLessonMatch(query){
+  const words = query.toLowerCase().split(/\s+/).filter(w=>w.length>1);
+  let best = null, bestScore = 0;
+  curriculum.forEach(ch=>{
+    ch.lessons.forEach(l=>{
+      const haystack = (l.title+' '+l.intro+' '+l.explanation+' '+l.summary.join(' ')+' '+l.mistakes+' '+l.think).toLowerCase();
+      let score = 0;
+      words.forEach(w=>{ if(haystack.includes(w)) score += (l.title.toLowerCase().includes(w) ? 3 : 1); });
+      if(score > bestScore){ bestScore = score; best = l; }
+    });
+  });
+  return bestScore>0 ? best : null;
+}
+
+function answerAssistant(query){
+  const lesson = findBestLessonMatch(query);
+  if(!lesson){
+    addAssistantMsg('لم أجد إجابة مطابقة في منهج كيمياء 1. جرّب إعادة صياغة سؤالك، أو تصفّح الدروس من الصفحة الرئيسية.', 'bot');
+    return;
+  }
+  const snippet = lesson.explanation.length>220 ? lesson.explanation.slice(0,220)+'...' : lesson.explanation;
+  addAssistantMsg(`من درس <b>${lesson.code} — ${lesson.title}</b>:<br>${snippet}<br><a data-code="${lesson.code}">فتح الدرس كاملًا ←</a>`, 'bot');
+}
+
+document.getElementById('assistantSend').onclick = sendAssistantMsg;
+document.getElementById('assistantInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') sendAssistantMsg(); });
+
+function sendAssistantMsg(){
+  const input = document.getElementById('assistantInput');
+  const q = input.value.trim();
+  if(!q) return;
+  addAssistantMsg(q, 'user');
+  input.value='';
+  setTimeout(()=>answerAssistant(q), 300);
+}
+
+document.getElementById('assistantBody').addEventListener('click', (e)=>{
+  if(e.target.tagName==='A' && e.target.dataset.code){
+    const code = e.target.dataset.code;
+    let found = null;
+    curriculum.forEach(ch=>ch.lessons.forEach(l=>{ if(l.code===code) found=l; }));
+    if(found){
+      document.getElementById('assistantPanel').classList.remove('open');
+      openLesson(found);
+    }
+  }
+});
+</script>
+</body>
+</html>
